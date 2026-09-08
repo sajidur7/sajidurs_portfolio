@@ -2,6 +2,7 @@
 
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
 
 const WORK_ITEMS = [
   { id: "proto-01", title: "Proto. 01", image: "/assets/works/proto-01.png?v=13" },
@@ -54,6 +55,7 @@ export function SelectedWorks() {
   const [isDragging, setIsDragging] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+  const [selectedProto, setSelectedProto] = useState<(typeof WORK_ITEMS)[0] | null>(null);
 
   const updateScrollButtons = useCallback(() => {
     const el = scrollRef.current;
@@ -205,6 +207,38 @@ export function SelectedWorks() {
     };
   }, [updateScrollButtons, stopMomentum]);
 
+  // Lock body scroll and handle Escape/Arrow keys when proto is expanded
+  useEffect(() => {
+    if (!selectedProto) return;
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setSelectedProto(null);
+      } else if (e.key === "ArrowRight") {
+        setSelectedProto((curr) => {
+          if (!curr) return null;
+          const idx = WORK_ITEMS.findIndex((w) => w.id === curr.id);
+          return WORK_ITEMS[(idx + 1) % WORK_ITEMS.length];
+        });
+      } else if (e.key === "ArrowLeft") {
+        setSelectedProto((curr) => {
+          if (!curr) return null;
+          const idx = WORK_ITEMS.findIndex((w) => w.id === curr.id);
+          return WORK_ITEMS[(idx - 1 + WORK_ITEMS.length) % WORK_ITEMS.length];
+        });
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [selectedProto]);
+
   return (
     <section id="works" className="mt-[100px]">
       {/* Section Header (Frame 7: y=456, h=12, gap=8) */}
@@ -284,9 +318,21 @@ export function SelectedWorks() {
           }}
         >
           {WORK_ITEMS.map((item) => (
-            <div key={item.id} className="shrink-0 w-[585px] group">
+            <div
+              key={item.id}
+              onClick={() => {
+                if (!hasMoved.current) {
+                  setSelectedProto(item);
+                }
+              }}
+              className="shrink-0 w-[585px] group cursor-pointer"
+            >
               {/* Image Box (585x450px, border-radius: 16px) */}
-              <div className="w-[585px] h-[450px] rounded-[16px] overflow-hidden bg-[#EAEAEA] shadow-[0_2px_8px_rgba(0,0,0,0.02)] transition-all duration-300 ease-out group-hover:-translate-y-[2px] group-hover:shadow-[0_16px_36px_-4px_rgba(0,0,0,0.05),0_4px_12px_-2px_rgba(0,0,0,0.025)]">
+              <motion.div
+                layoutId={`proto-card-${item.id}`}
+                transition={{ type: "spring", stiffness: 420, damping: 28, mass: 0.5 }}
+                className="w-[585px] h-[450px] rounded-[16px] overflow-hidden bg-[#EAEAEA] shadow-[0_2px_8px_rgba(0,0,0,0.02)] transition-shadow duration-300 ease-out group-hover:shadow-[0_16px_36px_-4px_rgba(0,0,0,0.05),0_4px_12px_-2px_rgba(0,0,0,0.025)] relative"
+              >
                 <Image
                   src={item.image}
                   alt={item.title}
@@ -298,7 +344,7 @@ export function SelectedWorks() {
                   draggable={false}
                   className="w-full h-full object-cover pointer-events-none select-none rounded-[16px]"
                 />
-              </div>
+              </motion.div>
 
               {/* Caption (Frame 10: gap 16px below image, Duplet 14px/18px #C0C0C0) */}
               <div className="mt-[16px] flex items-center justify-between">
@@ -310,6 +356,103 @@ export function SelectedWorks() {
           ))}
         </div>
       </div>
+
+      {/* Expanded Proto Lightbox Modal (Constrained under the content margin: max-w-[var(--site-w)]) */}
+      <AnimatePresence>
+        {selectedProto && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-8 select-none"
+            role="dialog"
+            aria-modal="true"
+            aria-label={selectedProto.title}
+          >
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.18, ease: "easeOut" }}
+              onClick={() => setSelectedProto(null)}
+              className="absolute inset-0 bg-[#F2F2F2]/88 backdrop-blur-md cursor-pointer"
+            />
+
+            {/* Modal Container - Constrained to site content margin: var(--site-w) (906px) */}
+            <div
+              className="relative z-10 w-full flex flex-col items-center"
+              style={{
+                maxWidth: "var(--site-w)",
+              }}
+            >
+              {/* Expanded Card */}
+              <motion.div
+                layoutId={`proto-card-${selectedProto.id}`}
+                transition={{ type: "spring", stiffness: 420, damping: 28, mass: 0.5 }}
+                className="relative w-full aspect-[585/450] max-h-[82vh] rounded-[16px] overflow-hidden bg-[#EAEAEA] shadow-[0_24px_60px_-12px_rgba(0,0,0,0.18)] cursor-pointer"
+                onClick={() => setSelectedProto(null)}
+              >
+                <Image
+                  src={selectedProto.image}
+                  alt={selectedProto.title}
+                  fill
+                  sizes="(max-width: 954px) 100vw, 906px"
+                  quality={100}
+                  unoptimized
+                  priority
+                  className="w-full h-full object-cover rounded-[16px]"
+                />
+
+                {/* Subtle Close Button */}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedProto(null);
+                  }}
+                  aria-label="Close preview"
+                  className="absolute top-4 right-4 z-20 w-[32px] h-[32px] rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center backdrop-blur-md transition-all duration-200 cursor-pointer shadow-sm"
+                >
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 14 14"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M2 2L12 12M12 2L2 12" />
+                  </svg>
+                </button>
+              </motion.div>
+
+              {/* Caption and Close CTA */}
+              <motion.div
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 4 }}
+                transition={{ duration: 0.15 }}
+                className="mt-[16px] w-full flex items-center justify-between px-1"
+              >
+                <p className="text-[14px] leading-[18px] text-primary font-sans font-medium">
+                  {selectedProto.title}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setSelectedProto(null)}
+                  className="text-[13px] leading-[18px] text-muted hover:text-primary font-sans transition-colors cursor-pointer flex items-center gap-1.5"
+                >
+                  <span>Close</span>
+                  <kbd className="text-[10px] px-1.5 py-0.5 rounded bg-black/5 border border-black/10 font-mono">
+                    ESC
+                  </kbd>
+                </button>
+              </motion.div>
+            </div>
+          </div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
+
