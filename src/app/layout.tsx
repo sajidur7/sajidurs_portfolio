@@ -3,7 +3,7 @@ import { mogra, duplet } from "./fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Sajidur's Playground",
+  title: "Sajidur's Portfolio",
   description: "Product & Experience Designer at TechSfera, based in Dhaka, BD.",
 };
 
