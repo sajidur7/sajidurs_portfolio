@@ -320,7 +320,7 @@ export function ProfileSidebar() {
               <XIcon />
             </a>
             <a
-              href="https://instagram.com/"
+              href={LINKS.INSTAGRAM}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram profile"
