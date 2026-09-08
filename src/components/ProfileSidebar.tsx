@@ -195,8 +195,10 @@ export function ProfileSidebar() {
         <p className="mt-[21px] max-w-[499px] font-sans text-[15px] leading-[24px] text-[#8D8D8D] font-normal">
           Hey, I’m Sajidur, a product designer at TechSfera, based in Bangladesh.
           <br />
-          Taking complicated problems, finding what really matters, and turning
-          <br />
+          Taking complicated problems, finding what really matters, and turning{" "}
+          <span className="hidden lg:inline">
+            <br />
+          </span>
           them into simple and clear experiences.
         </p>
 
