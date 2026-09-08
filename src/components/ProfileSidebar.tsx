@@ -193,8 +193,11 @@ export function ProfileSidebar() {
 
         {/* Bio Paragraph: Duplet, 15px/24px, #8D8D8D, max-w-[499px] */}
         <p className="mt-[21px] max-w-[499px] font-sans text-[15px] leading-[24px] text-[#8D8D8D] font-normal">
-          Hey, I’m Sajidur, a product designer at TechSfera, based in Bangladesh.{" "}
-          I like taking complicated problems and making them feel simple, clear, and easy to use.
+          Hey, I’m Sajidur, a product designer at TechSfera, based in Bangladesh.
+          <br />
+          I like taking complicated problems, finding what really matters,
+          <br />
+          and turning them into simple, clear, and easy-to-use digital experiences.
         </p>
 
         {/* Actions Link: Duplet 15px/22px */}
