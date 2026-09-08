@@ -5,11 +5,11 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
 const WORK_ITEMS = [
-  { id: "proto-01", title: "Proto. 01", image: "/assets/works/proto-01.png?v=15" },
-  { id: "proto-02", title: "Proto. 02", image: "/assets/works/proto-02.png?v=15" },
-  { id: "proto-03", title: "Proto. 03", image: "/assets/works/proto-03.png?v=15" },
-  { id: "proto-04", title: "Proto. 04", image: "/assets/works/proto-04.png?v=15" },
-  { id: "proto-05", title: "Proto. 05", image: "/assets/works/proto-05.png?v=15" },
+  { id: "proto-01", title: "Proto. 01", image: "/assets/works/proto-01.png?v=16" },
+  { id: "proto-02", title: "Proto. 02", image: "/assets/works/proto-02.png?v=16" },
+  { id: "proto-03", title: "Proto. 03", image: "/assets/works/proto-03.png?v=16" },
+  { id: "proto-04", title: "Proto. 04", image: "/assets/works/proto-04.png?v=16" },
+  { id: "proto-05", title: "Proto. 05", image: "/assets/works/proto-05.png?v=16" },
 ];
 
 function ArrowLeftIcon({ className }: { className?: string }) {
@@ -343,8 +343,8 @@ export function SelectedWorks() {
               }}
               className="shrink-0 w-[585px] group cursor-pointer"
             >
-              {/* Image Box (585x450px, 0 border-radius / sharp) */}
-              <div className="w-[585px] h-[450px] rounded-none overflow-hidden bg-[#EAEAEA] shadow-[0_2px_8px_rgba(0,0,0,0.02)] transition-shadow duration-300 ease-out group-hover:shadow-[0_16px_36px_-4px_rgba(0,0,0,0.05),0_4px_12px_-2px_rgba(0,0,0,0.025)] relative cursor-zoom-in">
+              {/* Image Box (585x450px, border-radius: 12px) */}
+              <div className="w-[585px] h-[450px] rounded-[12px] overflow-hidden bg-[#EAEAEA] shadow-[0_2px_8px_rgba(0,0,0,0.02)] transition-shadow duration-300 ease-out group-hover:shadow-[0_16px_36px_-4px_rgba(0,0,0,0.05),0_4px_12px_-2px_rgba(0,0,0,0.025)] relative cursor-zoom-in">
                 <Image
                   src={item.image}
                   alt={item.title}
@@ -354,7 +354,7 @@ export function SelectedWorks() {
                   unoptimized
                   priority={item.id === "proto-01" || item.id === "proto-02"}
                   draggable={false}
-                  className="w-full h-full object-cover pointer-events-none select-none rounded-none"
+                  className="w-full h-full object-cover pointer-events-none select-none rounded-[12px]"
                 />
               </div>
 
@@ -369,7 +369,7 @@ export function SelectedWorks() {
         </div>
       </div>
 
-      {/* Expanded Proto Lightbox Modal (Inspired by proto_open.mov: 0px radius, clean minimalist expansion, click-to-close) */}
+      {/* Expanded Proto Lightbox Modal (12px radius, clean minimalist expansion, click-to-close) */}
       <AnimatePresence>
         {selectedProto && (
           <div
@@ -388,13 +388,13 @@ export function SelectedWorks() {
               className="absolute inset-0 bg-[#F2F2F2]/80 backdrop-blur-md cursor-zoom-out"
             />
 
-            {/* Expanded Card: centered, sharp 0px radius, clean presentation, click anywhere to close */}
+            {/* Expanded Card: centered, 12px radius, clean presentation, click anywhere to close */}
             <motion.div
               initial={{ opacity: 0, scale: 0.94 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.94 }}
               transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              className="relative z-10 rounded-none overflow-hidden bg-[#EAEAEA] shadow-[0_24px_60px_-12px_rgba(0,0,0,0.18)] cursor-zoom-out flex items-center justify-center"
+              className="relative z-10 rounded-[12px] overflow-hidden bg-[#EAEAEA] shadow-[0_24px_60px_-12px_rgba(0,0,0,0.18)] cursor-zoom-out flex items-center justify-center"
               style={{
                 width: "min(906px, 90vw, calc(85vh * (585 / 450)))",
                 height: "min(697px, 85vh, calc(90vw * (450 / 585)))",
@@ -409,7 +409,7 @@ export function SelectedWorks() {
                 quality={100}
                 unoptimized
                 priority
-                className="w-full h-full object-cover rounded-none select-none pointer-events-none"
+                className="w-full h-full object-cover rounded-[12px] select-none pointer-events-none"
               />
             </motion.div>
           </div>

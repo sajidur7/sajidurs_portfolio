@@ -51,8 +51,8 @@ export function TechStack() {
             className="group relative shrink-0 flex items-center justify-center focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded transition-all duration-200 ease-out hover:scale-105 cursor-pointer"
             style={{ width: tool.width, height: tool.height }}
           >
-            {/* Tooltip Pill on Hover (below icon, matching user screenshot) */}
-            <div className="pointer-events-none absolute top-full mt-[12px] left-1/2 -translate-x-1/2 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 group-focus-visible:opacity-100 group-focus-visible:scale-100 transition-all duration-150 ease-out px-[16px] h-[36px] flex items-center justify-center rounded-[11px] bg-primary text-canvas font-sans text-[14px] leading-[18px] font-medium whitespace-nowrap shadow-md z-30">
+            {/* Tooltip Pill on Hover (below icon, 100% radius) */}
+            <div className="pointer-events-none absolute top-full mt-[12px] left-1/2 -translate-x-1/2 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 group-focus-visible:opacity-100 group-focus-visible:scale-100 transition-all duration-150 ease-out px-[16px] h-[36px] flex items-center justify-center rounded-full bg-primary text-canvas font-sans text-[14px] leading-[18px] font-medium whitespace-nowrap shadow-md z-30">
               {tool.label}
             </div>
 
