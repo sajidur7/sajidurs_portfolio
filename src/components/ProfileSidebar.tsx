@@ -165,7 +165,7 @@ function EllipseIcon() {
 
 export function ProfileSidebar() {
   return (
-    <aside className="w-full lg:w-[389px] shrink-0 border-r border-[#E8E8E8] border-l lg:border-l border-[#E8E8E8] flex flex-col justify-between lg:sticky lg:top-0 lg:h-screen lg:min-h-[1024px] select-text">
+    <aside className="w-full lg:w-[539px] shrink-0 border-r border-[#E8E8E8] border-l lg:border-l border-[#E8E8E8] flex flex-col justify-between lg:sticky lg:top-0 lg:h-screen lg:min-h-[1024px] select-text">
       {/* Top Section */}
       <div className="pt-[30px] px-[20px]">
         {/* Profile Avatar (70x70px, circular, black bg) */}
@@ -191,10 +191,10 @@ export function ProfileSidebar() {
           Product &amp; Experience Designer
         </p>
 
-        {/* Bio Paragraph: Duplet, 16px/24px, #8D8D8D */}
-        <p className="mt-[21px] max-w-[349px] font-sans text-[16px] leading-[24px] text-[#8D8D8D] font-normal">
-          Hey, I’m Sajidur, a product designer at TechSfera, based in Bangladesh.
-          I design simple experience for complex problems.
+        {/* Bio Paragraph: Duplet, 15px/24px, #8D8D8D, max-w-[499px] */}
+        <p className="mt-[21px] max-w-[499px] font-sans text-[15px] leading-[24px] text-[#8D8D8D] font-normal">
+          Hey, I’m Sajidur, a product designer at TechSfera, based in Bangladesh.{" "}
+          I like taking complicated problems and making them feel simple, clear, and easy to use.
         </p>
 
         {/* Actions Link: Duplet 15px/22px */}
