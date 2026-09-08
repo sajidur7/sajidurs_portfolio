@@ -4,11 +4,11 @@ import React, { useRef, useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 
 const WORK_ITEMS = [
-  { id: "proto-01", title: "Proto. 01", image: "/assets/works/proto-01.png?v=12" },
-  { id: "proto-02", title: "Proto. 02", image: "/assets/works/proto-02.png?v=12" },
-  { id: "proto-03", title: "Proto. 03", image: "/assets/works/proto-03.png?v=12" },
-  { id: "proto-04", title: "Proto. 04", image: "/assets/works/proto-04.png?v=12" },
-  { id: "proto-05", title: "Proto. 05", image: "/assets/works/proto-05.png?v=12" },
+  { id: "proto-01", title: "Proto. 01", image: "/assets/works/proto-01.png?v=13" },
+  { id: "proto-02", title: "Proto. 02", image: "/assets/works/proto-02.png?v=13" },
+  { id: "proto-03", title: "Proto. 03", image: "/assets/works/proto-03.png?v=13" },
+  { id: "proto-04", title: "Proto. 04", image: "/assets/works/proto-04.png?v=13" },
+  { id: "proto-05", title: "Proto. 05", image: "/assets/works/proto-05.png?v=13" },
 ];
 
 export function SelectedWorks() {
@@ -140,7 +140,7 @@ export function SelectedWorks() {
   }, [stopMomentum]);
 
   return (
-    <section id="works" className="mt-[89px]">
+    <section id="works" className="mt-[100px]">
       {/* Section Header (Frame 7: y=456, h=12, gap=8) */}
       <div className="flex items-center gap-[8px]">
         <Image
@@ -174,7 +174,7 @@ export function SelectedWorks() {
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerCancel}
           onClickCapture={handleClickCapture}
-          className={`w-full overflow-x-auto select-none no-scrollbar cursor-grab active:cursor-grabbing touch-pan-x [overscroll-behavior-x:contain] flex items-start gap-[20px] pt-[16px] pb-[20px] ${
+          className={`w-full overflow-x-auto select-none no-scrollbar cursor-grab active:cursor-grabbing touch-pan-x [overscroll-behavior-x:contain] flex items-start gap-[16px] pt-[8px] pb-[8px] ${
             isDragging ? "cursor-grabbing" : ""
           }`}
           style={{
@@ -185,23 +185,23 @@ export function SelectedWorks() {
           }}
         >
           {WORK_ITEMS.map((item) => (
-            <div key={item.id} className="shrink-0 w-[750px] group">
-              {/* Image Box (Rectangle 6: 750x575px, border-radius: 24px) */}
-              <div className="w-[750px] h-[575px] rounded-[24px] overflow-hidden bg-[#EAEAEA] shadow-[0_2px_8px_rgba(0,0,0,0.02)] transition-all duration-300 ease-out group-hover:-translate-y-[2px] group-hover:shadow-[0_16px_36px_-4px_rgba(0,0,0,0.05),0_4px_12px_-2px_rgba(0,0,0,0.025)]">
+            <div key={item.id} className="shrink-0 w-[585px] group">
+              {/* Image Box (585x450px, border-radius: 16px) */}
+              <div className="w-[585px] h-[450px] rounded-[16px] overflow-hidden bg-[#EAEAEA] shadow-[0_2px_8px_rgba(0,0,0,0.02)] transition-all duration-300 ease-out group-hover:-translate-y-[2px] group-hover:shadow-[0_16px_36px_-4px_rgba(0,0,0,0.05),0_4px_12px_-2px_rgba(0,0,0,0.025)]">
                 <Image
                   src={item.image}
                   alt={item.title}
-                  width={3000}
-                  height={2300}
+                  width={2340}
+                  height={1800}
                   quality={100}
                   unoptimized
                   priority={item.id === "proto-01" || item.id === "proto-02"}
                   draggable={false}
-                  className="w-full h-full object-cover pointer-events-none select-none"
+                  className="w-full h-full object-cover pointer-events-none select-none rounded-[16px]"
                 />
               </div>
 
-              {/* Caption (Frame 10: gap 16px below 575px image, Duplet 14px/18px #C0C0C0) */}
+              {/* Caption (Frame 10: gap 16px below image, Duplet 14px/18px #C0C0C0) */}
               <div className="mt-[16px] flex items-center justify-between">
                 <p className="text-[14px] leading-[18px] text-subtle font-sans font-normal m-0 group-hover:text-primary transition-colors duration-200">
                   {item.title}
