@@ -197,7 +197,7 @@ export function ProfileSidebar() {
           <br />
           Taking complicated problems, finding what really matters, and turning
           <br />
-          them into simple, clear, and easy-to-use digital experiences.
+          them into simple and clear experiences.
         </p>
 
         {/* Actions Link: Duplet 15px/22px */}
