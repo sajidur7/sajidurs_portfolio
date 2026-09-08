@@ -9,14 +9,6 @@ export function Footer() {
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
-  const [emailCopied, setEmailCopied] = useState(false);
-
-  const handleCopyEmail = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    navigator.clipboard.writeText(LINKS.EMAIL);
-    setEmailCopied(true);
-    setTimeout(() => setEmailCopied(false), 2000);
-  }, []);
 
   // Game canvas state
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -206,30 +198,24 @@ export function Footer() {
   }, [isPlaying]);
 
   return (
-    <footer id="footer" className="mt-[30px] pb-[60px]">
+    <footer className="mt-[40px] pb-[55px] select-text">
+      {/* Seamless In-Page Dino Runner (activated when isPlaying is true, matching footer_inspiration.mov) */}
       {isPlaying ? (
-        /* Active Chrome Dinosaur Game Canvas Bar */
-        <div
-          onClick={handleJumpOrRestart}
-          className="relative w-full h-[110px] rounded-[16px] bg-[#E8E8E8] border border-[#8D8D8D]/20 overflow-hidden select-none cursor-pointer flex flex-col justify-between p-3"
-          aria-label="Chrome Dinosaur Game. Space/Up to jump, Down to duck, Esc to exit."
-        >
+        <div className="w-full max-w-[906px] transition-all duration-300">
           <canvas
             ref={canvasRef}
             width={906}
-            height={70}
-            className="w-full h-[70px] block"
+            height={110}
+            onClick={handleJumpOrRestart}
+            className="w-full h-[110px] cursor-pointer block select-none"
           />
-
-          {/* Game Bar Bottom Row: Controls & Score */}
-          <div className="flex items-center justify-between text-[13px] text-muted font-sans pt-1 border-t border-[#8D8D8D]/15">
+          {/* HUD Line: Left instructions, Right score counter (Exact Figma Match) */}
+          <div className="mt-[14px] flex items-center justify-between font-sans text-[14px] leading-[22px] select-none text-primary">
             {gameOver ? (
-              <span className="text-accent font-medium inline-flex items-center gap-1.5">
-                <Image
-                  src="/assets/game/dino-dead.svg"
-                  alt=""
-                  width={14}
-                  height={14}
+              <span className="inline-flex items-center">
+                <span>Game over</span>
+                <span
+                  className="inline-block w-[3px] h-[3px] rounded-full bg-primary mx-[8px] shrink-0"
                   aria-hidden="true"
                 />
                 <span>Hit space to retry</span>
@@ -237,20 +223,31 @@ export function Footer() {
             ) : (
               <span className="inline-flex items-center">
                 <span>Space to jump</span>
-                <span className="mx-2">•</span>
+                <span
+                  className="inline-block w-[3px] h-[3px] rounded-full bg-primary mx-[8px] shrink-0"
+                  aria-hidden="true"
+                />
                 <span>↓ Duck</span>
-                <span className="mx-2">•</span>
+                <span
+                  className="inline-block w-[3px] h-[3px] rounded-full bg-primary mx-[8px] shrink-0"
+                  aria-hidden="true"
+                />
                 <button
                   type="button"
                   onClick={() => setIsPlaying(false)}
-                  className="cursor-pointer hover:opacity-75"
+                  className="cursor-pointer hover:opacity-75 transition-opacity text-primary"
                 >
                   Esc exit
                 </button>
               </span>
             )}
-            <span className="tabular-nums font-mono text-primary">
-              {String(score).padStart(5, "0")} / HI {String(highScore).padStart(5, "0")}
+            <span className="tabular-nums font-sans text-[14px] leading-[22px]">
+              <span className="text-primary font-normal">
+                {String(score).padStart(5, "0")}
+              </span>
+              <span className="text-muted ml-[18px]">
+                HI {String(highScore).padStart(5, "0")}
+              </span>
             </span>
           </div>
         </div>
@@ -284,14 +281,6 @@ export function Footer() {
           {/* Right: Social Links (Frame 27: y=2064, gap 20px, Duplet 400 14px/22px, underline, #232323) */}
           <div className="flex items-center gap-[20px] font-sans text-[14px] leading-[22px] text-primary">
             <a
-              href={LINKS.LINKEDIN}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline underline-offset-2 hover:opacity-75 transition-opacity"
-            >
-              LinkedIn
-            </a>
-            <a
               href={LINKS.X}
               target="_blank"
               rel="noopener noreferrer"
@@ -300,29 +289,20 @@ export function Footer() {
               X
             </a>
             <a
+              href={LINKS.LINKEDIN}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-2 hover:opacity-75 transition-opacity"
+            >
+              LinkedIn
+            </a>
+            <a
               href={LINKS.DRIBBBLE}
               target="_blank"
               rel="noopener noreferrer"
               className="underline underline-offset-2 hover:opacity-75 transition-opacity"
             >
               Dribbble
-            </a>
-            <button
-              type="button"
-              onClick={handleCopyEmail}
-              aria-label="Copy email address"
-              className="underline underline-offset-2 hover:opacity-75 transition-opacity cursor-pointer inline-flex items-center gap-1"
-              title="Click to copy heysajidur@gmail.com"
-            >
-              <span>{emailCopied ? "Copied!" : "Email"}</span>
-            </button>
-            <a
-              href={LINKS.CV}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline underline-offset-2 hover:opacity-75 transition-opacity"
-            >
-              Resume
             </a>
           </div>
         </div>

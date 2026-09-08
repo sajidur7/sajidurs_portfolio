@@ -6,13 +6,6 @@ import { LINKS } from "@/lib/config";
 
 export function Intro() {
   const [timeStr, setTimeStr] = useState("12: 05: 16 GMT +6");
-  const [emailCopied, setEmailCopied] = useState(false);
-
-  const handleCopyEmail = (e: React.MouseEvent) => {
-    navigator.clipboard.writeText(LINKS.EMAIL);
-    setEmailCopied(true);
-    setTimeout(() => setEmailCopied(false), 2000);
-  };
 
   useEffect(() => {
     function updateClock() {
@@ -124,15 +117,6 @@ export function Intro() {
       <p className="mt-[30px] text-[16px] leading-[22px] text-muted font-sans font-normal">
         Find me on{" "}
         <a
-          href={LINKS.LINKEDIN}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-primary underline underline-offset-2 hover:opacity-80 transition-opacity"
-        >
-          LinkedIn
-        </a>
-        ,{" "}
-        <a
           href={LINKS.X}
           target="_blank"
           rel="noopener noreferrer"
@@ -142,21 +126,10 @@ export function Intro() {
         </a>
         ,{" "}
         <a
-          href={LINKS.DRIBBBLE}
-          target="_blank"
-          rel="noopener noreferrer"
+          href={`mailto:${LINKS.EMAIL}`}
           className="text-primary underline underline-offset-2 hover:opacity-80 transition-opacity"
         >
-          Dribbble
-        </a>
-        ,{" "}
-        <a
-          href={`mailto:${LINKS.EMAIL}`}
-          onClick={handleCopyEmail}
-          title="Click to email or copy heysajidur@gmail.com"
-          className="text-primary underline underline-offset-2 hover:opacity-80 transition-opacity cursor-pointer"
-        >
-          {emailCopied ? "email copied!" : "email me"}
+          email me
         </a>
         , or{" "}
         <a
