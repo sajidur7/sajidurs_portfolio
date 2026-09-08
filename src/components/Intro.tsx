@@ -90,7 +90,7 @@ export function Intro() {
               />
             </span>
           </span>{" "}
-          TechSfera, based in Dhaka, BD.
+          TechSfera, based in Bangladesh.
           <br className="hidden md:inline" />
           I like taking complicated problems and making them feel simple, clear,{" "}
           <br className="hidden md:inline" />

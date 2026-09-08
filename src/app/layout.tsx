@@ -4,7 +4,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Sajidur's Portfolio",
-  description: "Product & Experience Designer at TechSfera, based in Dhaka, BD.",
+  description: "Product & Experience Designer at TechSfera, based in Bangladesh.",
 };
 
 export default function RootLayout({
