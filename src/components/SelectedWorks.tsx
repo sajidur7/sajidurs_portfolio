@@ -255,7 +255,7 @@ export function SelectedWorks() {
   }, [selectedProto]);
 
   return (
-    <section id="works" className="mt-[100px]">
+    <section id="works" className="mt-[90px]">
       {/* Section Header (Frame 7: y=456, h=12, gap=8) */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-[8px]">

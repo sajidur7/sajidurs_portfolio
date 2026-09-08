@@ -38,7 +38,7 @@ const EXPERIENCES: ExperienceItem[] = [
 
 export function Experiences() {
   return (
-    <section id="experiences" className="mt-[100px]">
+    <section id="experiences" className="mt-[90px]">
       {/* Section Header (Frame 28: y=1219, h=12, gap=8) */}
       <div className="flex items-center gap-[8px]">
         <Image

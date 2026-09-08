@@ -33,7 +33,7 @@ export function Outro() {
   }, [copyEmail]);
 
   return (
-    <section id="outro" className="mt-[100px]">
+    <section id="outro" className="mt-[90px]">
       {/* Section Header Row */}
       <div className="flex items-center justify-between h-[22px]">
         {/* Left: Section Title (Frame 26: y=1802, h=12, gap=8) */}

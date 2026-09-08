@@ -22,7 +22,7 @@ const TOOLS: ToolItem[] = [
 
 export function TechStack() {
   return (
-    <section id="tech-stack" className="mt-[100px]">
+    <section id="tech-stack" className="mt-[90px]">
       {/* Section Header (Frame 22: y=1606, h=12, gap=8) */}
       <div className="flex items-center gap-[8px]">
         <Image
