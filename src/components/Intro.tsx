@@ -42,12 +42,12 @@ export function Intro() {
         <span className="tabular-nums text-right">{timeStr}</span>
       </div>
 
-      {/* Profile Photo (Figma: y=70px, 70x70px, rounded 16px, background #000000) */}
+      {/* Profile Photo (Figma: y=70px, 70x70px, rounded 100%, background #000000) */}
       <div className="mt-[22px]">
         <div
-          className="relative w-[70px] h-[70px] rounded-[16px] overflow-hidden bg-[#000000] transition-all duration-300 ease-out hover:scale-[1.04] hover:shadow-md cursor-pointer"
+          className="relative w-[70px] h-[70px] rounded-full overflow-hidden bg-[#000000] transition-all duration-300 ease-out hover:scale-[1.04] hover:shadow-md cursor-pointer"
           style={{
-            borderRadius: "16px",
+            borderRadius: "100%",
             WebkitMaskImage: "-webkit-radial-gradient(white, black)",
           }}
         >
@@ -58,8 +58,8 @@ export function Intro() {
             height={70}
             unoptimized
             quality={100}
-            className="object-cover w-full h-full rounded-[16px] transition-transform duration-500 ease-out hover:scale-105"
-            style={{ borderRadius: "16px" }}
+            className="object-cover w-full h-full rounded-full transition-transform duration-500 ease-out hover:scale-105"
+            style={{ borderRadius: "100%" }}
             priority
           />
         </div>

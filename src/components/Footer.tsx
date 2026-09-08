@@ -265,7 +265,7 @@ export function Footer() {
               type="button"
               onClick={() => setIsPlaying(true)}
               aria-label="Play dinosaur game (or press G)"
-              className="w-[137px] h-[40px] rounded-[12px] bg-primary flex items-center justify-center px-[14px] py-[10px] cursor-pointer hover:opacity-90 active:scale-95 transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
+              className="w-[137px] h-[40px] rounded-full bg-primary flex items-center justify-center px-[14px] py-[10px] cursor-pointer hover:opacity-90 active:scale-95 transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
             >
               <Image
                 src="/assets/game/controller.svg"

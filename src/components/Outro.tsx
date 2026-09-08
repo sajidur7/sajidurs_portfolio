@@ -88,7 +88,7 @@ export function Outro() {
                 type="button"
                 onClick={copyEmail}
                 aria-label="Copy email address (or press C)"
-                className="inline-flex items-center justify-center w-[22px] h-[22px] rounded-[6px] bg-primary cursor-pointer hover:opacity-90 hover:scale-105 active:scale-90 transition-all duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary shadow-sm"
+                className="inline-flex items-center justify-center w-[22px] h-[22px] rounded-full overflow-hidden bg-primary cursor-pointer hover:opacity-90 hover:scale-105 active:scale-90 transition-all duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary shadow-sm"
               >
                 <Image
                   src="/assets/c-cap.svg"
