@@ -85,14 +85,15 @@ export function Intro() {
           and easy to use.
         </p>
 
-        {/* Status: Open to Work (Frame 6: y=255px, gap=8px, text: 14px/18px #232323) */}
-        <div className="flex items-center gap-[8px] shrink-0 group cursor-default">
+        {/* Status: Open to Work (Frame 6: 10x10px ellipse with 6px gap) */}
+        <div className="flex items-center gap-[6px] shrink-0 group cursor-default">
           <Image
-            src="/assets/section-glyph.svg"
+            src="/assets/icons/open-to-work-ellipse.png"
             alt=""
-            width={12}
-            height={12}
-            className="shrink-0 animate-pulse"
+            width={10}
+            height={10}
+            unoptimized
+            className="w-[10px] h-[10px] shrink-0 animate-pulse"
             aria-hidden="true"
           />
           <span className="text-[14px] leading-[18px] text-primary font-sans font-normal group-hover:opacity-80 transition-opacity">

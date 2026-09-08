@@ -6,6 +6,12 @@ export const mogra = localFont({
   display: "swap",
 });
 
+export const momoSignature = localFont({
+  src: "../fonts/MomoSignature-Regular.ttf",
+  variable: "--font-momo",
+  display: "swap",
+});
+
 export const duplet = localFont({
   src: [
     {
@@ -27,3 +33,4 @@ export const duplet = localFont({
   variable: "--font-duplet",
   display: "swap",
 });
+

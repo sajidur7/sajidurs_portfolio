@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { mogra, duplet } from "./fonts";
+import { mogra, duplet, momoSignature } from "./fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${mogra.variable} ${duplet.variable} antialiased`}
+      className={`${mogra.variable} ${duplet.variable} ${momoSignature.variable} antialiased`}
     >
       <body className="bg-canvas text-primary font-sans min-h-screen">
         {children}

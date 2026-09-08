@@ -1,33 +1,17 @@
-import { NavRail } from "@/components/NavRail";
-import { Intro } from "@/components/Intro";
-import { SelectedWorks } from "@/components/SelectedWorks";
-import { Experiences } from "@/components/Experiences";
-import { TechStack } from "@/components/TechStack";
-import { Outro } from "@/components/Outro";
-import { Footer } from "@/components/Footer";
+import { ProfileSidebar } from "@/components/ProfileSidebar";
+import { WorksFeed } from "@/components/WorksFeed";
 
 export default function Home() {
   return (
-    <div className="relative min-h-screen bg-canvas text-primary selection:bg-primary selection:text-canvas overflow-x-clip">
-      {/* Fixed Left Navigation Rail (Desktop) */}
-      <NavRail />
+    <div className="relative min-h-screen bg-[#F2F2F2] text-[#232323] selection:bg-[#232323] selection:text-[#F2F2F2] overflow-x-clip">
+      {/* 1440px Canvas Container with 1100px framed layout (389px left column + 711px right column) */}
+      <div className="max-w-[1440px] mx-auto min-h-screen flex flex-col lg:flex-row justify-center items-start">
+        {/* Left Column (x=160px to x=549px, 389px wide) */}
+        <ProfileSidebar />
 
-      {/* Main Centered Content Column (906px in Figma Frame 2) */}
-      <main
-        className="w-full mx-auto"
-        style={{
-          maxWidth: "var(--site-w)",
-          paddingLeft: "var(--content-x)",
-          paddingRight: "var(--content-x)",
-        }}
-      >
-        <Intro />
-        <SelectedWorks />
-        <Experiences />
-        <TechStack />
-        <Outro />
-        <Footer />
-      </main>
+        {/* Right Column (x=549px to x=1260px, 711px wide) */}
+        <WorksFeed />
+      </div>
     </div>
   );
 }
