@@ -5,11 +5,11 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
 const WORK_ITEMS = [
-  { id: "proto-01", title: "Proto. 01", image: "/assets/works/proto-01.png?v=14" },
-  { id: "proto-02", title: "Proto. 02", image: "/assets/works/proto-02.png?v=14" },
-  { id: "proto-03", title: "Proto. 03", image: "/assets/works/proto-03.png?v=14" },
-  { id: "proto-04", title: "Proto. 04", image: "/assets/works/proto-04.png?v=14" },
-  { id: "proto-05", title: "Proto. 05", image: "/assets/works/proto-05.png?v=14" },
+  { id: "proto-01", title: "Proto. 01", image: "/assets/works/proto-01.png?v=15" },
+  { id: "proto-02", title: "Proto. 02", image: "/assets/works/proto-02.png?v=15" },
+  { id: "proto-03", title: "Proto. 03", image: "/assets/works/proto-03.png?v=15" },
+  { id: "proto-04", title: "Proto. 04", image: "/assets/works/proto-04.png?v=15" },
+  { id: "proto-05", title: "Proto. 05", image: "/assets/works/proto-05.png?v=15" },
 ];
 
 function ArrowLeftIcon({ className }: { className?: string }) {
@@ -69,6 +69,7 @@ export function SelectedWorks() {
   // Drag physics refs
   const isDown = useRef(false);
   const startX = useRef(0);
+  const startY = useRef(0);
   const startScrollLeft = useRef(0);
   const lastX = useRef(0);
   const lastTime = useRef(0);
@@ -84,7 +85,7 @@ export function SelectedWorks() {
     }
   }, []);
 
-  // Momentum glide with cubic ease-out (matching snts.im)
+  // Momentum glide with cubic ease-out
   const startMomentum = useCallback(() => {
     stopMomentum();
     if (!scrollRef.current) return;
@@ -118,31 +119,33 @@ export function SelectedWorks() {
     stopMomentum();
     isDown.current = true;
     hasMoved.current = false;
-    setIsDragging(true);
     startX.current = e.clientX;
+    startY.current = e.clientY;
     startScrollLeft.current = scrollRef.current.scrollLeft;
     lastX.current = e.clientX;
     lastTime.current = performance.now();
     velocity.current = 0;
-
-    try {
-      e.currentTarget.setPointerCapture(e.pointerId);
-    } catch {
-      // Fallback
-    }
   };
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!isDown.current || !scrollRef.current) return;
-    e.preventDefault();
+
+    const dx = e.clientX - startX.current;
+    const dy = e.clientY - startY.current;
+
+    // Only classify as a drag gesture if movement exceeds 8px
+    if (Math.hypot(dx, dy) > 8) {
+      if (!hasMoved.current) {
+        hasMoved.current = true;
+        setIsDragging(true);
+      }
+    }
+
+    if (!hasMoved.current) return;
 
     const now = performance.now();
     const dt = Math.max(1, now - lastTime.current);
     const deltaX = e.clientX - lastX.current;
-
-    if (Math.abs(e.clientX - startX.current) > 3) {
-      hasMoved.current = true;
-    }
 
     // Velocity in px/sec (inverted: dragging left = scroll increases)
     velocity.current = (-deltaX / dt) * 1000;
@@ -151,31 +154,43 @@ export function SelectedWorks() {
     lastTime.current = now;
 
     // Direct 1:1 tracking
-    const totalWalk = e.clientX - startX.current;
-    scrollRef.current.scrollLeft = startScrollLeft.current - totalWalk;
+    scrollRef.current.scrollLeft = startScrollLeft.current - dx;
   };
 
   const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!isDown.current) return;
     isDown.current = false;
     setIsDragging(false);
-    startMomentum();
-    try {
-      e.currentTarget.releasePointerCapture(e.pointerId);
-    } catch {
-      // Fallback
+
+    if (hasMoved.current) {
+      startMomentum();
+      // Keep hasMoved.current true briefly so any subsequent click event is suppressed
+      setTimeout(() => {
+        hasMoved.current = false;
+      }, 80);
+    } else {
+      // Direct click/tap detection guarantee across all browsers/devices
+      const target = e.target as HTMLElement;
+      const cardEl = target.closest<HTMLElement>("[data-proto-id]");
+      if (cardEl) {
+        const id = cardEl.getAttribute("data-proto-id");
+        const found = WORK_ITEMS.find((w) => w.id === id);
+        if (found) {
+          setSelectedProto(found);
+        }
+      }
     }
   };
 
-  const handlePointerCancel = (e: React.PointerEvent<HTMLDivElement>) => {
+  const handlePointerCancel = () => {
     if (!isDown.current) return;
     isDown.current = false;
     setIsDragging(false);
-    startMomentum();
-    try {
-      e.currentTarget.releasePointerCapture(e.pointerId);
-    } catch {
-      // Fallback
+    if (hasMoved.current) {
+      startMomentum();
+      setTimeout(() => {
+        hasMoved.current = false;
+      }, 80);
     }
   };
 
@@ -288,10 +303,10 @@ export function SelectedWorks() {
         </div>
       </div>
 
-      {/* Divider Line (matches other sections: w-full, ending at right column edge) */}
+      {/* Divider Line */}
       <div className="mt-[20px] h-[1px] w-full bg-[#8D8D8D]/15" />
 
-      {/* Gallery Track Container: Full screen bleed across viewport (matching snts.im) */}
+      {/* Gallery Track Container: Full screen bleed across viewport */}
       <div
         className="relative mt-[14px]"
         style={{
@@ -320,6 +335,7 @@ export function SelectedWorks() {
           {WORK_ITEMS.map((item) => (
             <div
               key={item.id}
+              data-proto-id={item.id}
               onClick={() => {
                 if (!hasMoved.current) {
                   setSelectedProto(item);
@@ -328,11 +344,7 @@ export function SelectedWorks() {
               className="shrink-0 w-[585px] group cursor-pointer"
             >
               {/* Image Box (585x450px, 0 border-radius / sharp) */}
-              <motion.div
-                layoutId={`proto-card-${item.id}`}
-                transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                className="w-[585px] h-[450px] rounded-none overflow-hidden bg-[#EAEAEA] shadow-[0_2px_8px_rgba(0,0,0,0.02)] transition-shadow duration-300 ease-out group-hover:shadow-[0_16px_36px_-4px_rgba(0,0,0,0.05),0_4px_12px_-2px_rgba(0,0,0,0.025)] relative cursor-zoom-in"
-              >
+              <div className="w-[585px] h-[450px] rounded-none overflow-hidden bg-[#EAEAEA] shadow-[0_2px_8px_rgba(0,0,0,0.02)] transition-shadow duration-300 ease-out group-hover:shadow-[0_16px_36px_-4px_rgba(0,0,0,0.05),0_4px_12px_-2px_rgba(0,0,0,0.025)] relative cursor-zoom-in">
                 <Image
                   src={item.image}
                   alt={item.title}
@@ -344,7 +356,7 @@ export function SelectedWorks() {
                   draggable={false}
                   className="w-full h-full object-cover pointer-events-none select-none rounded-none"
                 />
-              </motion.div>
+              </div>
 
               {/* Caption (Frame 10: gap 16px below image, Duplet 14px/18px #C0C0C0) */}
               <div className="mt-[16px] flex items-center justify-between">
@@ -371,16 +383,22 @@ export function SelectedWorks() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
+              transition={{ duration: 0.22, ease: "easeOut" }}
               onClick={() => setSelectedProto(null)}
               className="absolute inset-0 bg-[#F2F2F2]/80 backdrop-blur-md cursor-zoom-out"
             />
 
-            {/* Expanded Card: centered, sharp 0px radius, clean presentation, click to close */}
+            {/* Expanded Card: centered, sharp 0px radius, clean presentation, click anywhere to close */}
             <motion.div
-              layoutId={`proto-card-${selectedProto.id}`}
-              transition={{ type: "spring", stiffness: 380, damping: 30 }}
-              className="relative z-10 w-full max-w-[var(--site-w)] aspect-[585/450] max-h-[85vh] rounded-none overflow-hidden bg-[#EAEAEA] shadow-[0_24px_60px_-12px_rgba(0,0,0,0.18)] cursor-zoom-out"
+              initial={{ opacity: 0, scale: 0.94 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.94 }}
+              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+              className="relative z-10 rounded-none overflow-hidden bg-[#EAEAEA] shadow-[0_24px_60px_-12px_rgba(0,0,0,0.18)] cursor-zoom-out flex items-center justify-center"
+              style={{
+                width: "min(906px, 90vw, calc(85vh * (585 / 450)))",
+                height: "min(697px, 85vh, calc(90vw * (450 / 585)))",
+              }}
               onClick={() => setSelectedProto(null)}
             >
               <Image
