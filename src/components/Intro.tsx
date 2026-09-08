@@ -78,19 +78,7 @@ export function Intro() {
       {/* Bio and Open to Work Row (Figma: y=256px bio, y=255px Open to Work) */}
       <div className="mt-[21px] flex flex-col md:flex-row md:items-start justify-between gap-6">
         <p className="max-w-[585px] text-[16px] leading-[24px] text-muted font-sans font-normal">
-          Hey, I’m Sajidur, a product designer at{" "}
-          <span className="relative inline-block h-0 w-[38px] align-baseline">
-            <span className="absolute -top-[23px] left-[2px] inline-flex items-center transition-transform duration-500 ease-out hover:rotate-90 hover:scale-110 cursor-pointer select-none">
-              <Image
-                src="/assets/techsfera-mark.svg"
-                alt="TechSfera mark"
-                width={34}
-                height={34}
-                className="block shrink-0"
-              />
-            </span>
-          </span>{" "}
-          TechSfera, based in Bangladesh.
+          Hey, I’m Sajidur, a product designer at TechSfera, based in Bangladesh.
           <br className="hidden md:inline" />
           I like taking complicated problems and making them feel simple, clear,{" "}
           <br className="hidden md:inline" />
