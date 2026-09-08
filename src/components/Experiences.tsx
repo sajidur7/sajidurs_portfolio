@@ -63,14 +63,14 @@ export function Experiences() {
           <React.Fragment key={item.id}>
             {/* Experience Item Row (Frame 21 / 20 / 19: h=35px in Figma, items-center) */}
             <div className="flex items-center gap-[12px]">
-              {/* Company Logo (34x34 with 8px radius) */}
-              <div className="w-[34px] h-[34px] shrink-0 rounded-[8px] overflow-hidden">
+              {/* Company Logo (34x34 with 100% radius) */}
+              <div className="w-[34px] h-[34px] shrink-0 rounded-full overflow-hidden">
                 <Image
                   src={item.icon}
                   alt={`${item.company} logo`}
                   width={34}
                   height={34}
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-contain rounded-full"
                 />
               </div>
 
