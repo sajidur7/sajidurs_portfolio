@@ -1,0 +1,10 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Mask group">
+<mask id="mask0_0_34" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="70" height="70">
+<rect id="Rectangle 5" width="70" height="70" rx="35" fill="#E2E2E2"/>
+</mask>
+<g mask="url(#mask0_0_34)">
+<rect id="photo 1" x="-14.875" y="-11.375" width="98.875" height="98.875" rx="49.4375" fill="#E1E1E1"/>
+</g>
+</g>
+</svg>

@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Local agent tooling
+.claude/
+
+# Source copies of the work images; the served copies live in public/works
+/works/
