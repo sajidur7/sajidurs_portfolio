@@ -11,9 +11,58 @@ const WORK_ITEMS = [
   { id: "proto-05", title: "Proto. 05", image: "/assets/works/proto-05.png?v=13" },
 ];
 
+function ArrowLeftIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M16.5 10H3.5M8.5 5L3.5 10L8.5 15" />
+    </svg>
+  );
+}
+
+function ArrowRightIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M3.5 10H16.5M11.5 5L16.5 10L11.5 15" />
+    </svg>
+  );
+}
+
 export function SelectedWorks() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const updateScrollButtons = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const atStart = el.scrollLeft <= 5;
+    const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 5;
+    setCanScrollLeft((prev) => (prev !== !atStart ? !atStart : prev));
+    setCanScrollRight((prev) => (prev !== !atEnd ? !atEnd : prev));
+  }, []);
 
   // Drag physics refs
   const isDown = useRef(false);
@@ -135,25 +184,74 @@ export function SelectedWorks() {
     }
   };
 
+  const scrollPrev = () => {
+    if (!scrollRef.current) return;
+    stopMomentum();
+    scrollRef.current.scrollBy({ left: -601, behavior: "smooth" });
+  };
+
+  const scrollNext = () => {
+    if (!scrollRef.current) return;
+    stopMomentum();
+    scrollRef.current.scrollBy({ left: 601, behavior: "smooth" });
+  };
+
   useEffect(() => {
-    return () => stopMomentum();
-  }, [stopMomentum]);
+    updateScrollButtons();
+    window.addEventListener("resize", updateScrollButtons);
+    return () => {
+      window.removeEventListener("resize", updateScrollButtons);
+      stopMomentum();
+    };
+  }, [updateScrollButtons, stopMomentum]);
 
   return (
     <section id="works" className="mt-[100px]">
       {/* Section Header (Frame 7: y=456, h=12, gap=8) */}
-      <div className="flex items-center gap-[8px]">
-        <Image
-          src="/assets/section-glyph.svg"
-          alt=""
-          width={12}
-          height={12}
-          className="shrink-0 -translate-y-[2px]"
-          aria-hidden="true"
-        />
-        <h2 className="font-display text-[16px] leading-[19px] text-primary font-normal">
-          Selected Works
-        </h2>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-[8px]">
+          <Image
+            src="/assets/section-glyph.svg"
+            alt=""
+            width={12}
+            height={12}
+            className="shrink-0 -translate-y-[2px]"
+            aria-hidden="true"
+          />
+          <h2 className="font-display text-[16px] leading-[19px] text-primary font-normal">
+            Selected Works
+          </h2>
+        </div>
+
+        {/* Carousel Navigation Arrows: 20x20px, 5px gap */}
+        <div className="flex items-center gap-[5px]">
+          <button
+            type="button"
+            onClick={scrollPrev}
+            disabled={!canScrollLeft}
+            aria-label="Previous work"
+            className={`w-[20px] h-[20px] p-0 flex items-center justify-center transition-colors duration-200 ${
+              canScrollLeft
+                ? "text-primary cursor-pointer hover:opacity-75"
+                : "text-muted cursor-default"
+            }`}
+          >
+            <ArrowLeftIcon />
+          </button>
+          <button
+            type="button"
+            onClick={scrollNext}
+            disabled={!canScrollRight}
+            aria-label="Next work"
+            className={`w-[20px] h-[20px] p-0 flex items-center justify-center transition-colors duration-200 ${
+              canScrollRight
+                ? "text-primary cursor-pointer hover:opacity-75"
+                : "text-muted cursor-default"
+            }`}
+          >
+            <ArrowRightIcon />
+          </button>
+        </div>
       </div>
 
       {/* Divider Line (matches other sections: w-full, ending at right column edge) */}
@@ -169,6 +267,7 @@ export function SelectedWorks() {
       >
         <div
           ref={scrollRef}
+          onScroll={updateScrollButtons}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
