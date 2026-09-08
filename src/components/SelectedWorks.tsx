@@ -5,11 +5,11 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
 const WORK_ITEMS = [
-  { id: "proto-01", title: "Proto. 01", image: "/assets/works/proto-01.png?v=16" },
-  { id: "proto-02", title: "Proto. 02", image: "/assets/works/proto-02.png?v=16" },
-  { id: "proto-03", title: "Proto. 03", image: "/assets/works/proto-03.png?v=16" },
-  { id: "proto-04", title: "Proto. 04", image: "/assets/works/proto-04.png?v=16" },
-  { id: "proto-05", title: "Proto. 05", image: "/assets/works/proto-05.png?v=16" },
+  { id: "proto-01", title: "Proto. 01", image: "/assets/works/proto-01.png?v=17" },
+  { id: "proto-02", title: "Proto. 02", image: "/assets/works/proto-02.png?v=17" },
+  { id: "proto-03", title: "Proto. 03", image: "/assets/works/proto-03.png?v=17" },
+  { id: "proto-04", title: "Proto. 04", image: "/assets/works/proto-04.png?v=17" },
+  { id: "proto-05", title: "Proto. 05", image: "/assets/works/proto-05.png?v=17" },
 ];
 
 function ArrowLeftIcon({ className }: { className?: string }) {
