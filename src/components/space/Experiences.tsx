@@ -44,11 +44,17 @@ const meta =
   "text-trim whitespace-nowrap text-center font-body text-[14px] leading-[22px] text-muted";
 
 export function Experiences() {
-  // 58 rather than the frame's 78: the chevron hit targets are 32px tall where
-  // the design only draws the 11.4px glyph, so the row above is 20px taller
-  // than in Figma and that has to come back out here.
+  /*
+    Twenty short of the other section gaps, and deliberately: the chevron hit
+    targets above are 32px tall where the design only draws the 11.4px glyph,
+    so the row above is 20px taller than in Figma and that comes back out here.
+    68 against the 88 below reads as the same distance.
+  */
   return (
-    <Reveal as="section" className="mt-[58px] flex w-full flex-col items-start gap-[30px]">
+    <Reveal
+      as="section"
+      className="mt-[63px] flex w-full flex-col items-start gap-[30px] sm:mt-[68px]"
+    >
       <SectionHeading
         title="Experiences"
         caption="Where I’ve worked & the products I’ve brought to life"
