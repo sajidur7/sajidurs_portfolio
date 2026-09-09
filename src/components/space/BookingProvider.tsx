@@ -41,9 +41,28 @@ const EXIT_MS = 380;
   Only this variable: `cal-bg-emphasis` and the rest still give the date cells
   and the time slots their fills.
 */
-const CAL_TRANSPARENT_GROUND = {
-  light: { "cal-bg": "transparent" },
-  dark: { "cal-bg": "transparent" },
+const CAL_UI = {
+  layout: "month_view",
+  /*
+    Always dark, and not a bug: the backdrop behind this is a dark wash in both
+    themes, so the booker is on a dark ground either way. Following the site
+    theme here would put a light booker on that dark wash.
+  */
+  theme: "dark",
+  hideEventTypeDetails: false,
+  /*
+    `cal-bg` is the booker's page ground, and it paints an opaque slab out to
+    the edges of the frame — white on the light theme, near-black on the dark
+    one. Either way it shows against our own backdrop. Both entries are
+    transparent, so it does not matter which set Cal resolves.
+
+    Only this variable: `cal-bg-emphasis` and the rest still give the date
+    cells and the time slots their fills.
+  */
+  cssVarsPerTheme: {
+    light: { "cal-bg": "transparent" },
+    dark: { "cal-bg": "transparent" },
+  },
 };
 
 type CalApi = ((...args: unknown[]) => void) & {
@@ -136,13 +155,6 @@ export function BookingProvider({ children }: { children: ReactNode }) {
     loadCal();
     const Cal = window.Cal!;
 
-    /*
-      Always dark, and not a bug: the backdrop behind this is a dark wash in
-      both themes, so the booker is on a dark ground either way. Following the
-      site theme here would put a light booker on that dark wash.
-    */
-    const theme = "dark";
-
     Cal("init", CAL_NAMESPACE, { origin: "https://app.cal.com" });
     /*
       `ui` before `inline`, which is the reverse of Cal's published snippet.
@@ -154,17 +166,12 @@ export function BookingProvider({ children }: { children: ReactNode }) {
       booker may already have rendered past: the transparent ground was lost
       and the white slab came back, but only from the second open onward.
     */
-    Cal.ns![CAL_NAMESPACE]("ui", {
-      layout: "month_view",
-      theme,
-      hideEventTypeDetails: false,
-      cssVarsPerTheme: CAL_TRANSPARENT_GROUND,
-    });
+    Cal.ns![CAL_NAMESPACE]("ui", CAL_UI);
 
     Cal.ns![CAL_NAMESPACE]("inline", {
       elementOrSelector: mount,
       calLink: CAL_LINK,
-      config: { layout: "month_view", theme },
+      config: { layout: "month_view", theme: CAL_UI.theme },
     });
 
     /*
@@ -179,8 +186,14 @@ export function BookingProvider({ children }: { children: ReactNode }) {
     */
     Cal.ns![CAL_NAMESPACE]("on", {
       action: "linkReady",
+      /*
+        The whole config again, not just the variables. Sent on its own, Cal
+        has no theme to resolve `cssVarsPerTheme` against and falls back to its
+        default ground — which is how a white slab appeared behind a booker
+        that was still rendering dark.
+      */
       callback: () => {
-        Cal.ns![CAL_NAMESPACE]("ui", { cssVarsPerTheme: CAL_TRANSPARENT_GROUND });
+        Cal.ns![CAL_NAMESPACE]("ui", CAL_UI);
       },
     });
   }, [open]);
