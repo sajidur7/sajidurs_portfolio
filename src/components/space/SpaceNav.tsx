@@ -5,7 +5,10 @@ import type { CSSProperties } from "react";
 import { cursorToast } from "@/lib/sound";
 
 /**
- * Figma node 7:366 — the floating pill.
+ * Figma node 33:323 — the floating pill, redrawn.
+ *
+ * The shell holds a 4px inset, each item is 42px tall, and the three sit 4px
+ * apart rather than flush against one another.
  *
  * In the frame it is centred on the 1440 canvas with 30px of clearance below,
  * so it is pinned to the window at that offset and centred on the viewport
@@ -34,10 +37,10 @@ export function SpaceNav() {
         blur, is what mobile Safari draws a coloured seam at. `isolate` keeps
         those child filters compositing inside the pill.
       */
-      className="fixed bottom-[30px] left-0 right-0 z-50 mx-auto flex w-fit max-w-[calc(100vw-24px)] animate-fade-in flex-col items-start isolate overflow-hidden rounded-full bg-surface p-[6px]"
+      className="fixed bottom-[30px] left-0 right-0 z-50 mx-auto flex w-fit max-w-[calc(100vw-24px)] animate-fade-in flex-col items-start isolate overflow-hidden rounded-full bg-surface p-[4px]"
       style={{ animationDelay: "450ms" }}
     >
-      <div className="flex items-center">
+      <div className="flex items-center gap-[4px]">
         {ITEMS.map((item) => {
           const live = Boolean(item.href);
           const content = (
@@ -69,7 +72,7 @@ export function SpaceNav() {
           /* The colour lives on the item, not the label, so the masked glyph
              inherits it too — otherwise every mark picks up the body's ink and
              the pending items' icons look active. */
-          const shared = `flex h-[36px] shrink-0 items-center justify-center gap-[6px] rounded-full bg-canvas px-[11px] py-[10px] transition-transform duration-300 ease-[var(--ease-smooth)] sm:px-[15px] ${
+          const shared = `flex h-[42px] shrink-0 items-center justify-center gap-[6px] rounded-full bg-canvas px-[11px] py-[10px] transition-transform duration-300 ease-[var(--ease-smooth)] sm:px-[15px] ${
             live ? "text-ink" : "text-faint"
           }`;
 
