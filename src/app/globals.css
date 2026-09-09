@@ -25,6 +25,16 @@
   /* One easing for everything, so the whole page decelerates the same way. */
   --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
 
+  /*
+   * The theme wipe needs its own curve. --ease-smooth is an expo ease-out,
+   * which is right for a small element settling but wrong for a full-screen
+   * radius: it reaches 92% of the way in the first third, so the sweep looks
+   * instant and then the last sliver crawls across the far corner — which
+   * reads as both "it starts somewhere else" and "it lags". This is paced
+   * evenly, and a circle's area already grows as r² so it still feels quick.
+   */
+  --ease-wipe: cubic-bezier(0.45, 0.05, 0.2, 1);
+
   --animate-blip: blip 2s cubic-bezier(0, 0, 0.2, 1) infinite;
   --animate-fade-in: fade-in 0.9s var(--ease-smooth) both;
 }
@@ -353,7 +363,7 @@ html.theme-expanding::view-transition-old(root) {
 
 html.theme-expanding::view-transition-new(root) {
   z-index: 2;
-  animation: theme-open 600ms var(--ease-smooth) forwards;
+  animation: theme-open 680ms var(--ease-wipe) forwards;
 }
 
 /* Going light: the outgoing page closes back into it. */
@@ -363,7 +373,7 @@ html.theme-collapsing::view-transition-new(root) {
 
 html.theme-collapsing::view-transition-old(root) {
   z-index: 2;
-  animation: theme-close 600ms var(--ease-smooth) forwards;
+  animation: theme-close 680ms var(--ease-wipe) forwards;
 }
 
 :focus-visible {
