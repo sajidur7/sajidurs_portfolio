@@ -14,7 +14,7 @@ export function TopBar() {
   return (
     <Reveal className="flex items-center justify-between pt-[30px]">
       <p className="text-trim whitespace-nowrap font-body text-[14px] leading-normal text-muted">
-        DHAKA
+        DHAKA, BD
       </p>
 
       <span className="flex items-center gap-[6px]">
