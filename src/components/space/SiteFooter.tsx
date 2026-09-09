@@ -53,7 +53,7 @@ export function SiteFooter() {
         <StatusDot />
       </span>
 
-      {/* Figma node 38:183 — solid pill, the 16.5px WhatsApp mark 6px ahead of
+      {/* Figma node 38:183 — solid pill, the 17px WhatsApp mark 6px ahead of
           the label. The label runs at the shared 15px rather than the frame's
           14, so it matches Let's Talk and See Portfolio. */}
       <MagneticButton
@@ -65,7 +65,7 @@ export function SiteFooter() {
           <img
             src="/figma/whatsapp-mark.png"
             alt=""
-            className="block size-[16.5px] max-w-none object-contain"
+            className="block size-[17px] max-w-none object-contain"
           />
         }
       />

@@ -96,7 +96,9 @@ export function Showcase() {
       reads as a slow close even at an identical duration. Repeating the
       ease-out is what actually makes the two feel like one gesture.
     */
-    if (el && from) {
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (el && from && !still) {
       const to = el.getBoundingClientRect();
       el.style.transition = `transform ${FLIP_MS}ms var(--ease-smooth)`;
       el.style.transform = `translate(${from.left + from.width / 2 - (to.left + to.width / 2)}px, ${
@@ -105,10 +107,20 @@ export function Showcase() {
     }
 
     setClosing(true);
-    window.setTimeout(() => {
-      setExpanded(null);
-      setClosing(false);
-    }, FLIP_MS);
+    window.setTimeout(
+      () => {
+        setExpanded(null);
+        setClosing(false);
+      },
+      /*
+        Opening skips the FLIP under reduced motion, so closing has to as well
+        — otherwise the two halves of the same gesture disagree, and a phone
+        with Reduce Motion on gets an instant open followed by a half-second
+        close. Reduce Motion is on by default for far more people on a phone
+        than on a desktop, which is where that mismatch shows up.
+      */
+      still ? 0 : FLIP_MS,
+    );
   }, [expanded]);
 
   /* FLIP: start the big image exactly where the card thumbnail is, then let it
@@ -332,7 +344,7 @@ export function Showcase() {
             booking panel uses, and it does not invert with the theme — the
             expanded work should read against one constant ground.
           */
-          className="fixed inset-0 z-[200] flex cursor-zoom-out items-center justify-center bg-[#232323]/60 p-[20px] opacity-0 transition-opacity duration-[520ms] ease-[var(--ease-smooth)] data-[open=true]:opacity-100 sm:p-[40px]"
+          className="fixed inset-0 z-[200] flex cursor-zoom-out items-center justify-center bg-[#232323]/60 opacity-0 transition-opacity duration-[520ms] ease-[var(--ease-smooth)] data-[open=true]:opacity-100 sm:p-[40px]"
         >
           {/* The wrapper shrink-wraps the image and carries the FLIP, so the
               tap zones travel with it instead of sitting still while it
@@ -346,9 +358,16 @@ export function Showcase() {
               src={SLIDES[expanded].src}
               alt={SLIDES[expanded].label}
               draggable={false}
-              /* Capped below the viewport so the work sits in some breathing
-                 room rather than filling the screen edge to edge. */
-              className="block max-h-[78vh] max-w-[92vw] select-none rounded-[20px] object-contain shadow-[0_40px_90px_-20px_rgba(0,0,0,0.45)] sm:max-w-[80vw]"
+              /*
+                Full width on a phone, inset on a desktop.
+
+                The desktop card is 670 in a wider window, so the work has room
+                to grow into and the expand reads as one: 0.77 to 1. A phone
+                card is already 335 of a 375 screen, and holding the old 92vw
+                cap left a 3% growth — the motion became a slide with no expand
+                in it. Full-bleed is all the room there is, and takes it to 12%.
+              */
+              className="block max-h-[78vh] max-w-[100vw] select-none rounded-[20px] object-contain shadow-[0_40px_90px_-20px_rgba(0,0,0,0.45)] sm:max-w-[80vw]"
             />
 
             {/*
