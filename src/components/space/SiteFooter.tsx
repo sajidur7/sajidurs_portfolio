@@ -36,7 +36,7 @@ export function SiteFooter() {
 
         <div className="flex flex-wrap items-center gap-x-[41px] gap-y-[14px]">
           <p className="text-trim whitespace-nowrap font-body text-[14px] leading-normal text-ink sm:text-right">
-            Follow me on social media:
+            {"Find Me Online :"}
           </p>
           <ul className="flex items-center gap-[20px]">
             {SOCIALS.map((social) => {
