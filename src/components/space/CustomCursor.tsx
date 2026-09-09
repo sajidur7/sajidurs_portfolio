@@ -14,8 +14,13 @@ import { CURSOR_TOAST, cursorToast, playTone } from "@/lib/sound";
  *
  * The dot chases the real pointer with a light lerp, which is what makes it
  * feel weighted rather than glued to the mouse.
+ *
+ * The fraction of the remaining distance closed each frame. At 1 the arrow is
+ * welded to the pointer and the weight is gone entirely; 0.65 keeps a trace of
+ * lag — roughly three frames to close a gap, about 50ms — which reads as
+ * responsive rather than heavy.
  */
-const EASE = 0.4;
+const EASE = 0.65;
 const TICKS = 8;
 const EMAIL = "incognitoshimul@gmail.com";
 const TOAST_MS = 1800;
