@@ -32,7 +32,7 @@ export function SiteFooter() {
 
       <div className="flex w-full flex-col items-start gap-[24px] sm:flex-row sm:items-center sm:justify-between sm:gap-0">
         {/* Text only — the label carries it, so no brand mark. */}
-        <MagneticButton href={WHATSAPP_URL} external label="Send Message" />
+        <MagneticButton href={WHATSAPP_URL} external label="Drop a Message" />
 
         <div className="flex flex-wrap items-center gap-x-[41px] gap-y-[14px]">
           <p className="text-trim whitespace-nowrap font-body text-[14px] leading-normal text-ink sm:text-right">
