@@ -37,12 +37,22 @@ const VARIANTS: Record<Variant, { shell: string; label: string; ink: string }> =
     label: "text-canvas group-hover:text-on-accent",
     ink: "var(--color-accent)",
   },
-  // Ink floods the light pill, so the label has to invert with it.
+  /*
+    Ink floods the light pill, so the label has to invert with it.
+
+    The stroke is a ring rather than a border: a border is drawn inside the
+    box, so at 40px tall it left this pill a 38px fill against Let's Talk's
+    full 40px. The stroke is near-invisible against the canvas, so the eye
+    reads the fill and the two buttons looked different heights. A ring sits
+    outside and takes no layout space, so both fills are 40px and the row
+    height is unchanged.
+  */
   outline: {
-    shell: "border border-edge bg-surface",
+    shell: "bg-surface ring-1 ring-edge",
     label: "text-ink group-hover:text-canvas",
     ink: "var(--color-ink)",
   },
+
 };
 
 export function MagneticButton({
