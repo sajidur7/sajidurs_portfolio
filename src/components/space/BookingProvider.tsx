@@ -173,7 +173,22 @@ export function BookingProvider({ children }: { children: ReactNode }) {
     Cal.ns![CAL_NAMESPACE]("inline", {
       elementOrSelector: mount,
       calLink: CAL_LINK,
-      config: { layout: "month_view", theme: CAL_UI.theme },
+      config: {
+        layout: "month_view",
+        theme: CAL_UI.theme,
+        /*
+          Pinned, because Cal otherwise takes it from our page's own
+          `color-scheme` — and then the frame and the booker disagree: the URL
+          went out as `theme=dark` with `ui.color-scheme=light` on the light
+          theme, which is what left an opaque slab behind a dark card.
+
+          It also settles the fallback. The colour scheme decides what the
+          browser paints behind the frame's own content, so pinning it dark
+          means that even if the transparency below never lands, what shows is
+          near-black — which is what our backdrop is in both themes anyway.
+        */
+        "ui.color-scheme": "dark",
+      },
     });
 
     /*
