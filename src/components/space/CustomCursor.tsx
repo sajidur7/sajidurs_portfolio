@@ -45,11 +45,13 @@ async function copyEmail() {
 
 export function CustomCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
+  const toastRef = useRef<HTMLSpanElement>(null);
   const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => {
     const dot = dotRef.current;
-    if (!dot) return;
+    const toastEl = toastRef.current;
+    if (!dot || !toastEl) return;
 
     const fine = window.matchMedia("(pointer: fine)").matches;
 
@@ -72,6 +74,19 @@ export function CustomCursor() {
     let toastTimer = 0;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    /*
+      Above the breakpoint the toast trails the pointer, so its position is set
+      here every frame. Below it the stylesheet parks the pill above the nav —
+      which an inline transform would override, so this stops writing one and
+      clears whatever it last wrote.
+    */
+    const rides = window.matchMedia("(min-width: 640px)");
+    const onRidesChange = () => {
+      if (!rides.matches) toastEl.style.transform = "";
+    };
+    rides.addEventListener("change", onRidesChange);
+    onRidesChange();
 
     const spark = (px: number, py: number) => {
       if (reduced) return;
@@ -120,6 +135,7 @@ export function CustomCursor() {
       x += (targetX - x) * (reduced ? 1 : EASE);
       y += (targetY - y) * (reduced ? 1 : EASE);
       dot.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      if (rides.matches) toastEl.style.transform = `translate3d(${x}px, ${y}px, 0)`;
       frame = requestAnimationFrame(loop);
     };
 
@@ -176,6 +192,7 @@ export function CustomCursor() {
     return () => {
       cancelAnimationFrame(frame);
       window.clearTimeout(toastTimer);
+      rides.removeEventListener("change", onRidesChange);
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerdown", onDown);
       window.removeEventListener("keydown", onKeyDown);
@@ -187,32 +204,36 @@ export function CustomCursor() {
   }, []);
 
   return (
-    <div ref={dotRef} className="cursor-dot" aria-hidden>
-      {/*
-        The supplied artwork, drawn at 20×22 — it carries its own white outline
-        and drop shadow, so nothing is re-drawn here.
+    <>
+      <div ref={dotRef} className="cursor-dot" aria-hidden>
+        {/*
+          The supplied artwork, drawn at 20×22 — it carries its own white outline
+          and drop shadow, so nothing is re-drawn here.
 
-        The hotspot is the arrow's point, where its two long edges intersect:
-        (2.885, 0.853) in the file's native 29×31, which scales to (1.99, 0.605)
-        at this size. The image is offset by exactly that, so the tip sits on the
-        true pointer position.
-      */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src="/pointer.svg"
-        alt=""
-        width={20}
-        height={22}
-        draggable={false}
-        /* No display here: an inline value would outrank the rule that hides
-           the arrow on touch. Preflight already makes images block. */
-        style={{ marginLeft: -1.99, marginTop: -0.605 }}
-      />
+          The hotspot is the arrow's point, where its two long edges intersect:
+          (2.885, 0.853) in the file's native 29×31, which scales to (1.99,
+          0.605) at this size. The image is offset by exactly that, so the tip
+          sits on the true pointer position.
+        */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/pointer.svg"
+          alt=""
+          width={20}
+          height={22}
+          draggable={false}
+          /* No display here: an inline value would outrank the rule that hides
+             the arrow on touch. Preflight already makes images block. */
+          style={{ marginLeft: -1.99, marginTop: -0.605 }}
+        />
+      </div>
 
-      {/* Rides along at the pointer's head. */}
-      <span className="cursor-toast" data-visible={toast !== null}>
-        {toast}
+      {/* Rides at the pointer's head on a desktop; parked above the nav on a
+          phone. Outside the arrow because it has to be able to pin itself to
+          the viewport, which a transformed ancestor would prevent. */}
+      <span ref={toastRef} className="cursor-toast" data-visible={toast !== null} aria-hidden>
+        <span className="cursor-toast-pill">{toast}</span>
       </span>
-    </div>
+    </>
   );
 }

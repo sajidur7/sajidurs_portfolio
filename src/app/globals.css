@@ -209,8 +209,29 @@ body {
   transform: scale(1.25);
 }
 
-/* Confirmation for the "C" shortcut, sitting just off the arrow's head. */
+/*
+  Confirmation for the "C" shortcut and the coming-soon replies.
+
+  Two elements, because the anchor and the pill need separate transforms: the
+  anchor is a zero-size point that carries the position, and the pill hangs off
+  it carrying the fade. Stacking both on one node would mean the entry
+  animation fighting whatever moved it.
+
+  The anchor is a sibling of the arrow rather than a child of it — a fixed
+  element inside a transformed one resolves against that transform, so nothing
+  in here could pin itself to the viewport while it lived in the cursor.
+*/
 .cursor-toast {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.cursor-toast-pill {
   position: absolute;
   left: 18px;
   top: 14px;
@@ -236,9 +257,39 @@ body {
     transform 0.25s var(--ease-smooth);
 }
 
-.cursor-toast[data-visible="true"] {
+.cursor-toast[data-visible="true"] .cursor-toast-pill {
   opacity: 1;
   transform: none;
+}
+
+/*
+  On a phone there is no cursor to ride, and a pill dropped at the fingertip
+  runs off whichever edge was tapped — which is exactly what happened to the
+  nav's replies, since those live in the bottom corners.
+
+  So below the breakpoint it stops following the touch and parks centred, 6px
+  above the nav: 20 of clearance plus the pill's 50, plus the 6.
+*/
+@media (max-width: 639px) {
+  .cursor-toast {
+    left: 50%;
+    top: auto;
+    bottom: 76px;
+  }
+
+  .cursor-toast-pill {
+    left: 0;
+    top: auto;
+    bottom: 0;
+    max-width: calc(100vw - 24px);
+    transform-origin: 50% 100%;
+    /* The anchor has no width, so -50% of the pill centres it on that point. */
+    transform: translateX(-50%) translateY(4px) scale(0.96);
+  }
+
+  .cursor-toast[data-visible="true"] .cursor-toast-pill {
+    transform: translateX(-50%);
+  }
 }
 
 /* Click spark: a ring plus radiating ticks, gone in under half a second. */
