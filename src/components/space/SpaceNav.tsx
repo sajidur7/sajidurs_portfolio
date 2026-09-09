@@ -26,7 +26,15 @@ const ITEMS = [
 export function SpaceNav() {
   return (
     <nav
-      className="fixed bottom-[30px] left-1/2 z-50 flex max-w-[calc(100vw-24px)] -translate-x-1/2 animate-fade-in flex-col items-start rounded-full bg-surface p-[6px]"
+      /*
+        Centred with auto margins rather than left-1/2 + -translate-x-1/2.
+        The pill's width is odd, so translating by -50% landed it on a half
+        pixel — and a fractional offset on a composited layer, sandwiched
+        between the backdrop-filtered scrim and children carrying a 0.75px
+        blur, is what mobile Safari draws a coloured seam at. `isolate` keeps
+        those child filters compositing inside the pill.
+      */
+      className="fixed bottom-[30px] left-0 right-0 z-50 mx-auto flex w-fit max-w-[calc(100vw-24px)] animate-fade-in flex-col items-start isolate rounded-full bg-surface p-[6px]"
       style={{ animationDelay: "450ms" }}
     >
       <div className="flex items-center">

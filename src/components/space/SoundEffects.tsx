@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { playTone } from "@/lib/sound";
+import { playTone, unlockAudio } from "@/lib/sound";
 
 /**
  * Every click anywhere on the page gets a tick — not just the controls — so the
@@ -16,6 +16,11 @@ import { playTone } from "@/lib/sound";
  */
 export function SoundEffects() {
   useEffect(() => {
+    // Opens the audio tap inside the first real gesture, which is the only
+    // moment mobile Safari will accept it.
+    const unlock = () => unlockAudio();
+    document.addEventListener("pointerdown", unlock, { once: true });
+
     const onPointerDown = (event: PointerEvent) => {
       if (event.button !== 0) return;
 
@@ -32,7 +37,10 @@ export function SoundEffects() {
     };
 
     document.addEventListener("pointerdown", onPointerDown);
-    return () => document.removeEventListener("pointerdown", onPointerDown);
+    return () => {
+      document.removeEventListener("pointerdown", unlock);
+      document.removeEventListener("pointerdown", onPointerDown);
+    };
   }, []);
 
   return null;

@@ -51,31 +51,73 @@ const TONES: Record<Tone, { from: number; to: number; peak: number }> = {
   nav: { from: 1320, to: 760, peak: 0.04 },
 };
 
-export function playTone(tone: Tone = "click") {
-  if (typeof window === "undefined" || isMuted()) return;
+function emit(ctx: AudioContext, tone: Tone) {
+  const { from, to, peak } = TONES[tone];
+  const start = ctx.currentTime;
+
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(from, start);
+  osc.frequency.exponentialRampToValueAtTime(to, start + 0.09);
+
+  // Ramp rather than a hard start/stop, so it reads as a tick and not a pop.
+  gain.gain.setValueAtTime(0.0001, start);
+  gain.gain.exponentialRampToValueAtTime(peak, start + 0.008);
+  gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.12);
+
+  osc.connect(gain).connect(ctx.destination);
+  osc.start(start);
+  osc.stop(start + 0.14);
+}
+
+/**
+ * Warms the audio context on the visitor's first interaction.
+ *
+ * Mobile Safari always hands back a suspended context and will not route Web
+ * Audio at all until something has actually played through it, so this pushes a
+ * one-frame silent buffer to open the tap. Must be called from inside a real
+ * gesture handler.
+ */
+export function unlockAudio() {
+  if (typeof window === "undefined") return;
 
   try {
     context ??= new AudioContext();
     if (context.state === "suspended") void context.resume();
 
-    const { from, to, peak } = TONES[tone];
-    const start = context.currentTime;
+    const source = context.createBufferSource();
+    source.buffer = context.createBuffer(1, 1, 22050);
+    source.connect(context.destination);
+    source.start(0);
+  } catch {
+    /* audio unavailable — the UI works exactly the same without it */
+  }
+}
 
-    const osc = context.createOscillator();
-    const gain = context.createGain();
+export function playTone(tone: Tone = "click") {
+  if (typeof window === "undefined" || isMuted()) return;
 
-    osc.type = "sine";
-    osc.frequency.setValueAtTime(from, start);
-    osc.frequency.exponentialRampToValueAtTime(to, start + 0.09);
+  try {
+    context ??= new AudioContext();
+    const ctx = context;
 
-    // Ramp rather than a hard start/stop, so it reads as a tick and not a pop.
-    gain.gain.setValueAtTime(0.0001, start);
-    gain.gain.exponentialRampToValueAtTime(peak, start + 0.008);
-    gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.12);
+    /*
+      A suspended context's clock has not started, so scheduling against
+      currentTime aims at a moment that is already past by the time it
+      resumes — silence. Desktop contexts are usually running by the first
+      click, which is why this only ever showed up on a phone.
+    */
+    if (ctx.state === "suspended") {
+      void ctx
+        .resume()
+        .then(() => emit(ctx, tone))
+        .catch(() => {});
+      return;
+    }
 
-    osc.connect(gain).connect(context.destination);
-    osc.start(start);
-    osc.stop(start + 0.14);
+    emit(ctx, tone);
   } catch {
     /* audio unavailable — the UI works exactly the same without it */
   }
