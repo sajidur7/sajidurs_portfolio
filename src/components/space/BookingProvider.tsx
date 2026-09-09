@@ -166,7 +166,9 @@ export function BookingProvider({ children }: { children: ReactNode }) {
       booker may already have rendered past: the transparent ground was lost
       and the white slab came back, but only from the second open onward.
     */
-    Cal.ns![CAL_NAMESPACE]("ui", CAL_UI);
+    const applyUi = () => Cal.ns![CAL_NAMESPACE]("ui", CAL_UI);
+
+    applyUi();
 
     Cal.ns![CAL_NAMESPACE]("inline", {
       elementOrSelector: mount,
@@ -192,10 +194,24 @@ export function BookingProvider({ children }: { children: ReactNode }) {
         default ground — which is how a white slab appeared behind a booker
         that was still rendering dark.
       */
-      callback: () => {
-        Cal.ns![CAL_NAMESPACE]("ui", CAL_UI);
-      },
+      callback: applyUi,
     });
+
+    /*
+      And again on a timer, because none of the above is a guarantee.
+
+      Everything except the CSS variables reaches the booker through its URL.
+      The variables travel as a message, so they only stick if they arrive
+      while the booker is listening — and that window moves with the network,
+      the embed script's own load, and whether this is a first open or a
+      reopen. Miss it and an opaque slab sits behind the card.
+
+      The call is idempotent, so re-asserting it a few times over the first
+      few seconds costs nothing and closes every gap the event alone leaves.
+    */
+    const retries = [300, 900, 2000, 4000].map((ms) => window.setTimeout(applyUi, ms));
+
+    return () => retries.forEach((id) => window.clearTimeout(id));
   }, [open]);
 
   useEffect(() => {

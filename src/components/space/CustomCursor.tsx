@@ -51,7 +51,14 @@ async function copyEmail() {
 export function CustomCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const toastRef = useRef<HTMLSpanElement>(null);
-  const [toast, setToast] = useState<string | null>(null);
+  /*
+    The message and whether it is showing are separate pieces of state on
+    purpose. Clearing the text at the same moment the pill starts fading empties
+    it on the first frame of the exit, so the words vanish and a blank pill
+    fades out after them. Keeping the text lets the whole thing leave together.
+  */
+  const [toast, setToast] = useState("");
+  const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
     const dot = dotRef.current;
@@ -182,8 +189,9 @@ export function CustomCursor() {
 
     const onToast = (event: Event) => {
       setToast((event as CustomEvent<string>).detail);
+      setShowToast(true);
       window.clearTimeout(toastTimer);
-      toastTimer = window.setTimeout(() => setToast(null), TOAST_MS);
+      toastTimer = window.setTimeout(() => setShowToast(false), TOAST_MS);
     };
 
     window.addEventListener("pointermove", onMove, { passive: true });
@@ -236,7 +244,7 @@ export function CustomCursor() {
       {/* Rides at the pointer's head on a desktop; parked above the nav on a
           phone. Outside the arrow because it has to be able to pin itself to
           the viewport, which a transformed ancestor would prevent. */}
-      <span ref={toastRef} className="cursor-toast" data-visible={toast !== null} aria-hidden>
+      <span ref={toastRef} className="cursor-toast" data-visible={showToast} aria-hidden>
         <span className="cursor-toast-pill">{toast}</span>
       </span>
     </>

@@ -317,14 +317,22 @@ body {
   opacity: 0;
   transform: translateY(4px) scale(0.96);
   transform-origin: 0 50%;
+  /*
+    This is the exit: a transition on the resting state is the one that runs on
+    the way back to it. Longer than the entrance, because arriving wants to be
+    quick and leaving wants to be unhurried.
+  */
   transition:
-    opacity 0.25s var(--ease-smooth),
-    transform 0.25s var(--ease-smooth);
+    opacity 0.34s var(--ease-smooth),
+    transform 0.34s var(--ease-smooth);
 }
 
 .cursor-toast[data-visible="true"] .cursor-toast-pill {
   opacity: 1;
   transform: none;
+  transition:
+    opacity 0.22s var(--ease-smooth),
+    transform 0.22s var(--ease-smooth);
 }
 
 /*
