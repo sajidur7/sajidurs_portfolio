@@ -34,7 +34,7 @@ export function SpaceNav() {
         blur, is what mobile Safari draws a coloured seam at. `isolate` keeps
         those child filters compositing inside the pill.
       */
-      className="fixed bottom-[30px] left-0 right-0 z-50 mx-auto flex w-fit max-w-[calc(100vw-24px)] animate-fade-in flex-col items-start isolate rounded-full bg-surface p-[6px]"
+      className="fixed bottom-[30px] left-0 right-0 z-50 mx-auto flex w-fit max-w-[calc(100vw-24px)] animate-fade-in flex-col items-start isolate overflow-hidden rounded-full bg-surface p-[6px]"
       style={{ animationDelay: "450ms" }}
     >
       <div className="flex items-center">
@@ -90,9 +90,19 @@ export function SpaceNav() {
               type="button"
               onClick={() => cursorToast(`${item.label} — coming soon`)}
               title={`${item.label} — coming soon`}
-              className={`${shared} blur-[0.75px] hover:blur-none`}
+              className={`${shared} group`}
             >
-              {content}
+              {/*
+                The blur goes on the contents, not the pill. On the pill it
+                made a filtered layer out of an element that also carries the
+                background and the rounded edge — and for the last item that
+                layer sits right on the nav's boundary, which is where mobile
+                Safari was drawing a coloured seam. Inset like this the filter
+                never touches the pill's edge.
+              */}
+              <span className="flex items-center gap-[6px] blur-[0.75px] transition-[filter] duration-300 group-hover:blur-none">
+                {content}
+              </span>
             </button>
           );
         })}
