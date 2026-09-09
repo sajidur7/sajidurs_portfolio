@@ -28,7 +28,7 @@ const SLIDES = [
 const SWIPE_THRESHOLD = 50;
 const EXIT_MS = 420;
 /** Long enough to actually look at a piece, short enough that it keeps moving. */
-const AUTOPLAY_MS = 3500;
+const AUTOPLAY_MS = 3000;
 
 export function Showcase() {
   const [index, setIndex] = useState(0);
