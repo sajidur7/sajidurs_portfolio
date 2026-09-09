@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { MagneticButton } from "./MagneticButton";
 import { Reveal } from "./Reveal";
-import { SectionHeading } from "./SectionHeading";
+import { StatusDot } from "./StatusDot";
 
 /**
  * Figma node 7:203 — the X mark is 20×18, the other three are 20×20.
@@ -23,21 +23,45 @@ const SOCIALS = [
 /** Figma node 7:193. */
 export function SiteFooter() {
   return (
-    <Reveal as="footer" className="mt-[80px] flex w-full flex-col items-start gap-[20px]">
-      <SectionHeading
-        as="p"
-        title="Sajidur Rahman"
-        caption="Currently: designing thoughtful products that feel alive"
-      />
+    /*
+      A grid rather than two independent rows: the right-hand column is sized
+      to its widest content — the caption — so the socials line starts on the
+      caption's left edge instead of wherever its own width happens to put it.
+      Two flex rows could only line up by coincidence.
 
-      <div className="flex w-full flex-col items-start gap-[24px] sm:flex-row sm:items-center sm:justify-between sm:gap-0">
-        {/* Text only — the label carries it, so no brand mark. */}
-        <MagneticButton href={WHATSAPP_URL} external label="Drop a Message" />
+      This is why the footer does not use SectionHeading: the heading has to
+      share the grid's columns to take part in that alignment.
+    */
+    <Reveal
+      as="footer"
+      /* justify-items-start because grid items stretch by default, which
+         pulled the pill out to the full width of its column. */
+      className="mt-[80px] grid w-full grid-cols-[1fr_max-content] items-center justify-items-start gap-x-[20px] gap-y-[24px] sm:gap-y-[20px]"
+    >
+      <p
+        className="text-trim whitespace-nowrap font-heading text-[16px] font-bold capitalize leading-none tracking-[0.32px] text-ink"
+        style={{ fontVariationSettings: '"opsz" 14, "wdth" 100' }}
+      >
+        Sajidur Rahman
+      </p>
 
-        <div className="flex flex-wrap items-center gap-x-[41px] gap-y-[14px]">
-          <p className="text-trim whitespace-nowrap font-body text-[14px] leading-normal text-ink sm:text-right">
-            {"Find Me Online :"}
-          </p>
+      <span className="flex items-center gap-[6px] justify-self-end">
+        {/* Too long to share a line with the name on a phone; the dot stays. */}
+        <span className="text-trim hidden whitespace-nowrap text-right font-body text-[14px] leading-normal text-faint sm:block">
+          Currently: designing thoughtful products that feel alive
+        </span>
+        <StatusDot />
+      </span>
+
+      {/* Text only — the label carries it, so no brand mark. */}
+      <MagneticButton href={WHATSAPP_URL} external label="Drop a Message" />
+
+      {/* Spans both columns on a phone, where the caption is hidden and column
+          two is only as wide as the accent dot. */}
+      <div className="col-span-2 flex w-full flex-wrap items-center justify-between gap-x-[41px] gap-y-[14px] sm:col-span-1">
+        <p className="text-trim whitespace-nowrap font-body text-[14px] leading-normal text-ink">
+          {"Find Me Online :"}
+        </p>
           <ul className="flex items-center gap-[20px]">
             {SOCIALS.map((social) => {
               const Item = social.href ? "a" : "span";
@@ -61,8 +85,7 @@ export function SiteFooter() {
                 </li>
               );
             })}
-          </ul>
-        </div>
+        </ul>
       </div>
     </Reveal>
   );
