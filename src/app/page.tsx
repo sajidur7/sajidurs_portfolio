@@ -47,7 +47,7 @@ export default function Home() {
       */}
       <div
         aria-hidden
-        className="pointer-events-none fixed bottom-0 left-0 z-40 h-[108px] w-full bg-gradient-to-b from-[rgba(35,35,35,0)] to-[rgba(35,35,35,0.1)] backdrop-blur-[3.5px] [mask-image:linear-gradient(to_bottom,transparent_0%,#000_70%)] [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,#000_70%)]"
+        className="pointer-events-none fixed bottom-0 left-0 z-40 h-[108px] w-full bg-[linear-gradient(to_bottom,transparent,var(--scrim))] backdrop-blur-[3.5px] [mask-image:linear-gradient(to_bottom,transparent_0%,#000_70%)] [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,#000_70%)]"
       />
 
       <SpaceNav />

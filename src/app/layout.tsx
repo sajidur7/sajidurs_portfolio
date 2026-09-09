@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque } from "next/font/google";
 import localFont from "next/font/local";
+import Script from "next/script";
 import "./globals.css";
 
 const bricolage = Bricolage_Grotesque({
@@ -32,8 +33,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
+    /*
+      suppressHydrationWarning because the theme script sets data-theme on this
+      element before React hydrates; the attribute is deliberately expected to
+      differ from what the server rendered.
+    */
     <html
       lang="en"
+      data-theme="light"
+      suppressHydrationWarning
       className={`${bricolage.variable} ${duplet.variable} h-full antialiased`}
     >
       <head>
@@ -42,7 +50,17 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <style>{`.reveal{opacity:1!important;transform:none!important}`}</style>
         </noscript>
       </head>
-      <body className="min-h-full">{children}</body>
+      <body className="min-h-full">
+        {/*
+          Resolves the theme before hydration. Without it the page paints light
+          and then snaps to dark for anyone who chose it. Stored choice wins;
+          otherwise it follows the system.
+        */}
+        <Script id="theme" strategy="beforeInteractive">
+          {`(function(){try{var s=localStorage.getItem('space:theme');var d=s?s==='dark':matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.dataset.theme=d?'dark':'light'}catch(e){}})()`}
+        </Script>
+        {children}
+      </body>
     </html>
   );
 }

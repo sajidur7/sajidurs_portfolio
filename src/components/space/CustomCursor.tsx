@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { playTone } from "@/lib/sound";
+import { CURSOR_TOAST, cursorToast, playTone } from "@/lib/sound";
 
 /**
  * Replaces the system pointer with the arrow from the design, fires a spark
@@ -45,7 +45,7 @@ async function copyEmail() {
 
 export function CustomCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
-  const [copied, setCopied] = useState(false);
+  const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => {
     if (!window.matchMedia("(pointer: fine)").matches) return;
@@ -132,14 +132,19 @@ export function CustomCursor() {
 
       playTone("nav");
       spark(targetX, targetY);
-      setCopied(true);
+      cursorToast("Email copied to clipboard");
+    };
+
+    const onToast = (event: Event) => {
+      setToast((event as CustomEvent<string>).detail);
       window.clearTimeout(toastTimer);
-      toastTimer = window.setTimeout(() => setCopied(false), TOAST_MS);
+      toastTimer = window.setTimeout(() => setToast(null), TOAST_MS);
     };
 
     window.addEventListener("pointermove", onMove, { passive: true });
     window.addEventListener("pointerdown", onDown, { passive: true });
     window.addEventListener("keydown", onKeyDown);
+    window.addEventListener(CURSOR_TOAST, onToast);
     document.addEventListener("pointerleave", onLeave);
     document.addEventListener("pointerenter", onEnter);
     frame = requestAnimationFrame(loop);
@@ -150,6 +155,7 @@ export function CustomCursor() {
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerdown", onDown);
       window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener(CURSOR_TOAST, onToast);
       document.removeEventListener("pointerleave", onLeave);
       document.removeEventListener("pointerenter", onEnter);
       root.classList.remove("has-custom-cursor");
@@ -178,8 +184,8 @@ export function CustomCursor() {
       />
 
       {/* Rides along at the pointer's head. */}
-      <span className="cursor-toast" data-visible={copied}>
-        Email copied to clipboard
+      <span className="cursor-toast" data-visible={toast !== null}>
+        {toast}
       </span>
     </div>
   );

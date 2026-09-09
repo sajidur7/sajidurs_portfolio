@@ -187,7 +187,7 @@ export function Showcase() {
         onPointerCancel={() => {
           dragStart.current = null;
         }}
-        className="mt-[40px] aspect-[670/540] w-full overflow-hidden rounded-[20px] bg-white"
+        className="mt-[40px] aspect-[670/540] w-full overflow-hidden rounded-[20px] bg-card"
       >
         <ul
           className="flex h-full w-full transition-transform duration-[650ms] ease-[var(--ease-smooth)]"
@@ -199,7 +199,7 @@ export function Showcase() {
               aria-roledescription="slide"
               aria-label={`${position + 1} of ${SLIDES.length}`}
               aria-hidden={position !== index}
-              className="h-full w-full shrink-0 bg-white"
+              className="h-full w-full shrink-0 bg-card"
             >
               <button
                 type="button"
@@ -293,7 +293,7 @@ export function Showcase() {
             straight edge, and a tint that only reaches ~9% black at the foot of
             the screen rather than a heavy modal scrim.
           */
-          className="fixed inset-0 z-[200] flex cursor-zoom-out items-center justify-center bg-gradient-to-b from-[rgba(35,35,35,0)] to-[rgba(35,35,35,0.09)] p-[20px] opacity-0 backdrop-blur-[4px] transition-opacity duration-[420ms] ease-[var(--ease-smooth)] data-[open=true]:opacity-100 sm:p-[40px]"
+          className="fixed inset-0 z-[200] flex cursor-zoom-out items-center justify-center bg-[linear-gradient(to_bottom,transparent,var(--scrim-soft))] p-[20px] opacity-0 backdrop-blur-[4px] transition-opacity duration-[420ms] ease-[var(--ease-smooth)] data-[open=true]:opacity-100 sm:p-[40px]"
         >
           <img
             ref={bigRef}

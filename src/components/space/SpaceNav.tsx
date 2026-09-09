@@ -1,5 +1,8 @@
+"use client";
+
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
+import { cursorToast } from "@/lib/sound";
 
 /**
  * Figma node 7:366 — the floating pill.
@@ -67,14 +70,17 @@ export function SpaceNav() {
               {content}
             </Link>
           ) : (
-            <span
+            /* Clickable rather than inert: tapping it says so on the cursor,
+               which beats a dead control that gives no feedback at all. */
+            <button
               key={item.label}
-              aria-disabled="true"
+              type="button"
+              onClick={() => cursorToast(`${item.label} — coming soon`)}
               title={`${item.label} — coming soon`}
-              className={`${shared} cursor-default blur-[0.75px] hover:blur-none`}
+              className={`${shared} blur-[0.75px] hover:blur-none`}
             >
               {content}
-            </span>
+            </button>
           );
         })}
       </div>

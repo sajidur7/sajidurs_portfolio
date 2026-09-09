@@ -1,10 +1,14 @@
-/* eslint-disable @next/next/no-img-element */
 import { Clock } from "./Clock";
 import { Reveal } from "./Reveal";
+import { ThemeToggle } from "./ThemeToggle";
 
 /**
- * Figma nodes 7:295 / 7:296 — the "EST . 2026" mark and the clock readout,
- * pinned to the two ends of the column.
+ * Figma nodes 19:586 (the "EST . 2026" mark) and 19:588 / 19:587.
+ *
+ * The clock glyph that used to lead the time is gone; the readout now runs
+ * right-aligned and the theme toggle sits after it, 6px clear — in the frame
+ * the text ends at x1034 and the 15px icon starts at x1040, with the group
+ * finishing on the column's right edge.
  */
 export function TopBar() {
   return (
@@ -13,15 +17,9 @@ export function TopBar() {
         {"EST .  2026"}
       </p>
 
-      <span className="flex items-center gap-[4px]">
-        <span className="relative size-[15px] shrink-0 overflow-hidden">
-          <img
-            src="/figma/icon-clock.svg"
-            alt=""
-            className="absolute left-[0.65px] top-[0.65px] block h-[13.7px] w-[13.7px] max-w-none"
-          />
-        </span>
+      <span className="flex items-center gap-[6px]">
         <Clock />
+        <ThemeToggle />
       </span>
     </Reveal>
   );

@@ -8,6 +8,7 @@
 @theme {
   --color-canvas: #f2f2f2;
   --color-surface: #fbfbfb;
+  --color-card: #ffffff;
   --color-ink: #232323;
   --color-muted: #8d8d8d;
   --color-faint: #c0c0c0;
@@ -62,10 +63,62 @@
   text-box: trim-both cap alphabetic;
 }
 
+/*
+ * The Figma file defines the two toggle icons but no dark palette, so this is
+ * derived rather than transcribed: it keeps every relationship the light theme
+ * has — surface sits above canvas, ink is the foreground and doubles as the
+ * inverted button fill — so nothing downstream needs to special-case a theme.
+ *
+ * Overriding the same custom properties is enough because Tailwind's utilities
+ * resolve them at use time; `html[data-theme]` simply outranks :root.
+ */
+html[data-theme="dark"] {
+  --color-canvas: #0b0b0b;
+  --color-surface: #161616;
+  --color-card: #141414;
+  --color-ink: #ededed;
+  --color-muted: #8a8a8a;
+  --color-faint: #5c5c5c;
+  --color-edge: #242424;
+  --color-hairline: #2b2b2b;
+  --color-rule: #3a3a3a;
+  /* Accent is the brand and stays put across themes. */
+
+  --scrim: rgba(0, 0, 0, 0.55);
+  --scrim-soft: rgba(0, 0, 0, 0.5);
+}
+
+:root {
+  /* Bottom fade and modal backdrops, so they can invert with the theme. */
+  --scrim: rgba(35, 35, 35, 0.1);
+  --scrim-soft: rgba(35, 35, 35, 0.09);
+}
+
 html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   scroll-behavior: smooth;
+  color-scheme: light;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+/*
+ * Cross-fade the swap, but only while it is happening. A standing rule here
+ * would outrank the Tailwind transition utilities on every hover state and
+ * quietly replace them; the toggle adds this class for the duration instead.
+ */
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+  transition:
+    background-color 320ms var(--ease-smooth),
+    border-color 320ms var(--ease-smooth),
+    color 320ms var(--ease-smooth),
+    fill 320ms var(--ease-smooth),
+    stroke 320ms var(--ease-smooth) !important;
 }
 
 body {

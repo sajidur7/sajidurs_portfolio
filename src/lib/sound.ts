@@ -9,6 +9,18 @@
  */
 const STORAGE_KEY = "space:sound-muted";
 
+/**
+ * Raises a message on the cursor — the same pill the "C" shortcut uses.
+ * Decoupled through an event so any component can call it without reaching
+ * into the cursor's state.
+ */
+export const CURSOR_TOAST = "space:cursor-toast";
+
+export function cursorToast(message: string) {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new CustomEvent(CURSOR_TOAST, { detail: message }));
+}
+
 type Tone = "click" | "nav";
 
 let context: AudioContext | null = null;
