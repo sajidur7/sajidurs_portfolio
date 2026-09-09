@@ -76,8 +76,10 @@ export function Experiences() {
                   {...(item.href ? { href: item.href, target: "_blank", rel: "noreferrer" } : {})}
                   className="group flex w-full items-center gap-[10px] transition-transform duration-300 ease-[var(--ease-smooth)] hover:translate-x-[3px]"
                 >
+                  {/* Dropped on phones so the row below has the width to run
+                      side by side the way it does on desktop. */}
                   <span
-                    className="flex shrink-0 items-center justify-center overflow-hidden rounded-full transition-transform duration-300 ease-[var(--ease-smooth)] group-hover:scale-110"
+                    className="hidden shrink-0 items-center justify-center overflow-hidden rounded-full transition-transform duration-300 ease-[var(--ease-smooth)] group-hover:scale-110 sm:flex"
                     style={{
                       width: item.logo.box,
                       height: item.logo.box,
@@ -96,11 +98,13 @@ export function Experiences() {
                     <span className="text-trim block w-full font-body text-[16px] font-semibold leading-[22px] text-ink transition-colors duration-200 group-hover:text-accent">
                       {item.company}
                     </span>
-                    <span className="flex w-full flex-col items-start gap-[8px] sm:flex-row sm:items-center sm:justify-between sm:gap-0">
-                      <span className="text-trim block font-body text-[14px] leading-[22px] text-muted sm:w-[117px]">
+                    <span className="flex w-full items-center justify-between gap-[8px] sm:gap-0">
+                      <span className="text-trim block whitespace-nowrap font-body text-[14px] leading-[22px] text-muted sm:w-[117px]">
                         {item.role}
                       </span>
-                      <span className="flex items-center gap-[6px]">
+                      {/* 4px on phones buys the ~8px that keeps the longest
+                          row on one line down to a 360px screen. */}
+                      <span className="flex items-center gap-[4px] sm:gap-[6px]">
                         <span className={meta}>{item.commitment}</span>
                         <span className="h-[10px] w-px shrink-0 bg-rule" />
                         <span className={`${meta} whitespace-pre`}>{item.period}</span>

@@ -132,7 +132,8 @@ export function Hero() {
         </span>
 
         <span className="flex items-center gap-[6px]">
-          <span className="text-trim whitespace-nowrap font-body text-[14px] leading-normal text-ink">
+          {/* On a phone the pulsing dot carries the meaning on its own. */}
+          <span className="text-trim hidden whitespace-nowrap font-body text-[14px] leading-normal text-ink sm:inline">
             Open to Work
           </span>
           <StatusDot />

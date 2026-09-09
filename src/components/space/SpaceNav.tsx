@@ -45,7 +45,7 @@ export function SpaceNav() {
                 />
               </span>
               <span
-                className={`text-trim whitespace-nowrap font-body text-[15px] leading-[22px] ${
+                className={`text-trim whitespace-nowrap font-body text-[14px] leading-[22px] sm:text-[15px] ${
                   live ? "font-semibold text-ink" : "text-faint"
                 }`}
               >
