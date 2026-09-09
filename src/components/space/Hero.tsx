@@ -149,7 +149,9 @@ export function Hero() {
               />
             }
           />
-          <MagneticButton href="#work" label="Portfolio" variant="outline" />
+          {/* Same answer the nav's Portfolio gives, from the same helper —
+             the two should never disagree about whether the page exists. */}
+          <MagneticButton soon="Portfolio" label="Portfolio" variant="outline" />
         </span>
 
         <span className="flex items-center gap-[6px]">

@@ -1,6 +1,7 @@
 "use client";
 
 import { type PointerEvent, type ReactNode, useRef } from "react";
+import { cursorToast } from "@/lib/sound";
 import { useBooking } from "./BookingProvider";
 
 /**
@@ -21,6 +22,11 @@ import { useBooking } from "./BookingProvider";
  *
  * Pass `booking` instead of `href` to open the scheduling panel; the element
  * becomes a real <button> in that case rather than a link to nowhere.
+ *
+ * `soon` covers a destination that does not exist yet: it answers on the cursor
+ * the way the nav's pending items do, so the control still responds instead of
+ * going nowhere. Swapping it for an `href` is all it takes to make the button a
+ * live link once the page ships.
  */
 const PULL = 2;
 
@@ -58,6 +64,7 @@ const VARIANTS: Record<Variant, { shell: string; label: string; ink: string }> =
 export function MagneticButton({
   href,
   booking = false,
+  soon,
   external = false,
   label,
   icon,
@@ -66,6 +73,8 @@ export function MagneticButton({
 }: {
   href?: string;
   booking?: boolean;
+  /** Name of the page still to come; announced on the cursor when clicked. */
+  soon?: string;
   external?: boolean;
   label: ReactNode;
   icon?: ReactNode;
@@ -124,6 +133,20 @@ export function MagneticButton({
       </span>
     </>
   );
+
+  if (soon) {
+    return (
+      <button
+        {...shared}
+        ref={ref as React.RefObject<HTMLButtonElement>}
+        type="button"
+        title={`${soon} — coming soon`}
+        onClick={() => cursorToast(`${soon} — coming soon`)}
+      >
+        {inner}
+      </button>
+    );
+  }
 
   if (booking) {
     return (
