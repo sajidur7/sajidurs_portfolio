@@ -1,7 +1,7 @@
 "use client";
 
-/* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { cursorToast } from "@/lib/sound";
 
 /**
@@ -35,21 +35,22 @@ export function SpaceNav() {
           const content = (
             <>
               <span className="relative size-[16px] shrink-0 overflow-hidden">
-                <img
-                  src={item.icon}
-                  alt=""
-                  className="absolute block max-w-none"
-                  style={{
-                    width: item.size,
-                    height: item.size,
-                    left: item.offset,
-                    top: item.offset,
-                  }}
+                <span
+                  className="nav-glyph absolute"
+                  style={
+                    {
+                      width: item.size,
+                      height: item.size,
+                      left: item.offset,
+                      top: item.offset,
+                      "--glyph": `url(${item.icon})`,
+                    } as CSSProperties
+                  }
                 />
               </span>
               <span
                 className={`text-trim whitespace-nowrap font-body text-[14px] leading-[22px] sm:text-[15px] ${
-                  live ? "font-semibold text-ink" : "text-faint"
+                  live ? "font-semibold" : ""
                 }`}
               >
                 {item.label}
@@ -57,8 +58,12 @@ export function SpaceNav() {
             </>
           );
 
-          const shared =
-            "flex h-[36px] shrink-0 items-center justify-center gap-[6px] rounded-full bg-canvas px-[11px] py-[10px] transition-transform duration-300 ease-[var(--ease-smooth)] sm:px-[15px]";
+          /* The colour lives on the item, not the label, so the masked glyph
+             inherits it too — otherwise every mark picks up the body's ink and
+             the pending items' icons look active. */
+          const shared = `flex h-[36px] shrink-0 items-center justify-center gap-[6px] rounded-full bg-canvas px-[11px] py-[10px] transition-transform duration-300 ease-[var(--ease-smooth)] sm:px-[15px] ${
+            live ? "text-ink" : "text-faint"
+          }`;
 
           return live ? (
             <Link

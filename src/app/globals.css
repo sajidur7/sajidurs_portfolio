@@ -81,7 +81,9 @@ html[data-theme="dark"] {
   --color-card: #141414;
   --color-ink: #ededed;
   --color-muted: #8a8a8a;
-  --color-faint: #5c5c5c;
+  /* Lifted from #5c5c5c: the captions using it sat at 2.94 contrast. Still
+     recessive, as the design intends, but legible. */
+  --color-faint: #6b6b6b;
   --color-edge: #242424;
   --color-hairline: #303030;
   --color-rule: #3a3a3a;
@@ -287,6 +289,20 @@ body {
     var(--color-hairline) 0 4px,
     transparent 4px 8px
   );
+}
+
+/*
+ * Nav glyphs are single-colour, so they are painted through a mask rather than
+ * loaded as images. That lets each one inherit its label's colour — the active
+ * item's mark tracks the ink token, the pending ones track faint — instead of
+ * staying at the #232323 / #C0C0C0 baked into the exported files, which left
+ * the home icon invisible on the dark active pill.
+ */
+.nav-glyph {
+  display: block;
+  background-color: currentColor;
+  -webkit-mask: var(--glyph) no-repeat center / contain;
+  mask: var(--glyph) no-repeat center / contain;
 }
 
 /*
