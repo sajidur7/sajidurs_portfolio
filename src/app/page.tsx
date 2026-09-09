@@ -29,9 +29,9 @@ export default function Home() {
   return (
     <BookingProvider>
       {/* On a phone the nav's top edge sits 70px off the bottom of the
-          window (20 clearance + 50 tall), so 90 leaves the footer 20px
+          window (20 clearance + 50 tall), so 100 leaves the footer 30px
           clear of it once the page is scrolled out. */}
-      <main className="min-h-screen w-full bg-canvas pb-[90px] sm:pb-[150px]">
+      <main className="min-h-screen w-full bg-canvas pb-[100px] sm:pb-[150px]">
         <div className="mx-auto w-full max-w-[670px] px-[20px] sm:px-[28px] lg:px-0">
           <TopBar />
           <Hero />
