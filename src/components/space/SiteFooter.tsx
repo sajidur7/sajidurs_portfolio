@@ -9,6 +9,10 @@ import { SectionHeading } from "./SectionHeading";
  * An entry only renders as a link once it has an `href`, so a profile can be
  * dropped or added without touching the markup.
  */
+/* 01997631218 in wa.me form: national leading 0 dropped, Bangladesh's 880 in
+   front. wa.me only accepts a full international number with no punctuation. */
+const WHATSAPP_URL = "https://wa.me/8801997631218";
+
 const SOCIALS = [
   { src: "/figma/social-linkedin.svg", label: "LinkedIn", href: "https://www.linkedin.com/in/mdsajidur/", w: 20, h: 20 },
   { src: "/figma/social-dribbble.svg", label: "Dribbble", href: "https://dribbble.com/sajidurrahman", w: 20, h: 20 },
@@ -27,7 +31,26 @@ export function SiteFooter() {
       />
 
       <div className="flex w-full flex-col items-start gap-[24px] sm:flex-row sm:items-center sm:justify-between sm:gap-0">
-        <MagneticButton booking label="Work With Me" />
+        {/*
+          Figma node 33:119. Replaces the booking button here — the footer now
+          opens WhatsApp instead. The mark is the design's own two-tone brand
+          asset, so it needs no theming and reads on the pill in either mode.
+        */}
+        <MagneticButton
+          href={WHATSAPP_URL}
+          external
+          gap={6}
+          label="Message Me"
+          icon={
+            <img
+              src="/figma/icon-whatsapp.svg"
+              alt=""
+              width={18}
+              height={18}
+              className="block size-[18px] max-w-none"
+            />
+          }
+        />
 
         <div className="flex flex-wrap items-center gap-x-[41px] gap-y-[14px]">
           <p className="text-trim whitespace-nowrap font-body text-[14px] leading-normal text-ink sm:text-right">

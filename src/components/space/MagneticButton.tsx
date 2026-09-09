@@ -58,14 +58,19 @@ const VARIANTS: Record<Variant, { shell: string; label: string; ink: string }> =
 export function MagneticButton({
   href,
   booking = false,
+  external = false,
   label,
   icon,
+  gap = 8,
   variant = "solid",
 }: {
   href?: string;
   booking?: boolean;
+  external?: boolean;
   label: ReactNode;
   icon?: ReactNode;
+  /** Icon-to-label gap; the frame uses 8 on Let's Talk and 6 on Message Me. */
+  gap?: number;
   variant?: Variant;
 }) {
   const ref = useRef<HTMLElement>(null);
@@ -100,8 +105,8 @@ export function MagneticButton({
     onPointerMove: track,
     onPointerLeave: release,
     onBlur: release,
-    style: { transform: "translate(var(--tx, 0px), var(--ty, 0px))" },
-    className: `group relative isolate flex h-[40px] shrink-0 items-center justify-center gap-[8px] overflow-hidden rounded-full px-[15px] py-[10px] transition-[transform,scale] duration-[450ms] ease-[var(--ease-smooth)] active:scale-[0.985] ${styles.shell}`,
+    style: { transform: "translate(var(--tx, 0px), var(--ty, 0px))", gap: `${gap}px` },
+    className: `group relative isolate flex h-[40px] shrink-0 items-center justify-center overflow-hidden rounded-full px-[15px] py-[10px] transition-[transform,scale] duration-[450ms] ease-[var(--ease-smooth)] active:scale-[0.985] ${styles.shell}`,
   };
 
   const inner = (
@@ -134,7 +139,12 @@ export function MagneticButton({
   }
 
   return (
-    <a {...shared} ref={ref as React.RefObject<HTMLAnchorElement>} href={href}>
+    <a
+      {...shared}
+      ref={ref as React.RefObject<HTMLAnchorElement>}
+      href={href}
+      {...(external ? { target: "_blank", rel: "noreferrer" } : {})}
+    >
       {inner}
     </a>
   );
