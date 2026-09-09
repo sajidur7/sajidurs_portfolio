@@ -31,26 +31,8 @@ export function SiteFooter() {
       />
 
       <div className="flex w-full flex-col items-start gap-[24px] sm:flex-row sm:items-center sm:justify-between sm:gap-0">
-        {/*
-          Figma node 33:119. Replaces the booking button here — the footer now
-          opens WhatsApp instead. The mark is the design's own two-tone brand
-          asset, so it needs no theming and reads on the pill in either mode.
-        */}
-        <MagneticButton
-          href={WHATSAPP_URL}
-          external
-          gap={6}
-          label="Message Me"
-          icon={
-            <img
-              src="/figma/icon-whatsapp.svg"
-              alt=""
-              width={18}
-              height={18}
-              className="block size-[18px] max-w-none"
-            />
-          }
-        />
+        {/* Text only — the label carries it, so no brand mark. */}
+        <MagneticButton href={WHATSAPP_URL} external label="Send A Message" />
 
         <div className="flex flex-wrap items-center gap-x-[41px] gap-y-[14px]">
           <p className="text-trim whitespace-nowrap font-body text-[14px] leading-normal text-ink sm:text-right">
