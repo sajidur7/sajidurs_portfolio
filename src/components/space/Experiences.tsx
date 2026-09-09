@@ -102,8 +102,11 @@ export function Experiences() {
                         <span className={meta}>{item.commitment}</span>
                         <span className="h-[10px] w-px shrink-0 bg-rule" />
                         <span className={`${meta} whitespace-pre`}>{item.period}</span>
-                        <span className="h-[10px] w-px shrink-0 bg-rule" />
-                        <span className={meta}>{item.tenure}</span>
+                        {/* Tenure and its divider are desktop-only: the dates
+                            already say how long the role ran, and dropping them
+                            is what keeps the row on one line on a phone. */}
+                        <span className="hidden h-[10px] w-px shrink-0 bg-rule sm:block" />
+                        <span className={`${meta} hidden sm:block`}>{item.tenure}</span>
                       </span>
                     </span>
                   </span>

@@ -3,7 +3,7 @@ import { Reveal } from "./Reveal";
 import { ThemeToggle } from "./ThemeToggle";
 
 /**
- * Figma nodes 19:586 (the "EST . 2026" mark) and 19:588 / 19:587.
+ * Figma nodes 19:586 (the location mark) and 19:588 / 19:587.
  *
  * The clock glyph that used to lead the time is gone; the readout now runs
  * right-aligned and the theme toggle sits after it, 6px clear — in the frame
@@ -13,8 +13,8 @@ import { ThemeToggle } from "./ThemeToggle";
 export function TopBar() {
   return (
     <Reveal className="flex items-center justify-between pt-[30px]">
-      <p className="text-trim whitespace-pre font-body text-[14px] leading-normal text-muted">
-        {"EST .  2026"}
+      <p className="text-trim whitespace-nowrap font-body text-[14px] leading-normal text-muted">
+        DHAKA
       </p>
 
       <span className="flex items-center gap-[6px]">
