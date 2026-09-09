@@ -332,14 +332,14 @@ body {
   runs off whichever edge was tapped — which is exactly what happened to the
   nav's replies, since those live in the bottom corners.
 
-  So below the breakpoint it stops following the touch and parks centred, 6px
-  above the nav: 20 of clearance plus the pill's 50, plus the 6.
+  So below the breakpoint it stops following the touch and parks centred, 10px
+  above the nav: 20 of clearance plus the pill's 50, plus the 10.
 */
 @media (max-width: 639px) {
   .cursor-toast {
     left: 50%;
     top: auto;
-    bottom: 76px;
+    bottom: 80px;
   }
 
   .cursor-toast-pill {

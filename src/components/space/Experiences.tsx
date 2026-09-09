@@ -19,7 +19,6 @@ const EXPERIENCES = [
     role: "Product Designer",
     commitment: "Full-time",
     period: " 12 . 2024 — Present",
-    tenure: "21m",
     href: "",
     logo: { src: "/figma/logo-techsfera-orange.svg", background: "#f84620", box: 32, width: 20, height: 20 },
   },
@@ -28,7 +27,6 @@ const EXPERIENCES = [
     role: "UX/UI Designer",
     commitment: "Part-time",
     period: " 03 . 2022 — Present",
-    tenure: "N/A",
     href: "",
     logo: { src: "/figma/logo-fiverr.svg", background: "#1dbf73", box: 34, width: 16, height: 19 },
   },
@@ -37,7 +35,6 @@ const EXPERIENCES = [
     role: "UI Designer",
     commitment: "Full-time",
     period: " 08 . 2021 — 03 . 2022",
-    tenure: "6m",
     href: "",
     logo: { src: "/figma/logo-biggorillaapps.svg", background: "#cd1632", box: 34, width: 22, height: 18 },
   },
@@ -102,11 +99,6 @@ export function Experiences() {
                         <span className={meta}>{item.commitment}</span>
                         <span className="h-[10px] w-px shrink-0 bg-rule" />
                         <span className={`${meta} whitespace-pre`}>{item.period}</span>
-                        {/* Tenure and its divider are desktop-only: the dates
-                            already say how long the role ran, and dropping them
-                            is what keeps the row on one line on a phone. */}
-                        <span className="hidden h-[10px] w-px shrink-0 bg-rule sm:block" />
-                        <span className={`${meta} hidden sm:block`}>{item.tenure}</span>
                       </span>
                     </span>
                   </span>
