@@ -124,9 +124,17 @@ export function Hero() {
       </Reveal>
 
       <Reveal
-        /* 26.5 rather than 30.5: the pills grew 36→40px, and frame 14:69 takes
-           that out of the space above them instead of pushing the card down. */
-        className="mt-[26.5px] flex flex-wrap items-center justify-between gap-x-[10px] gap-y-[18px]"
+        /*
+          Five more than the 26.5 this sat at, which is the +5 asked for on the
+          desktop measurement. The 26.5 itself came from frame 14:69: the pills
+          grew 36→40px and the frame took that out of the space above them
+          rather than pushing the card down.
+
+          A phone gets less of the increase. The row below wraps there — the
+          buttons and the availability tag stack — so the same addition would
+          read as a bigger hole than it does on one line.
+        */
+        className="mt-[28px] flex flex-wrap items-center justify-between gap-x-[10px] gap-y-[18px] sm:mt-[31.5px]"
         delay={300}
       >
         <span className="flex items-center gap-[10px]">
