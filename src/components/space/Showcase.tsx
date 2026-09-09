@@ -24,6 +24,7 @@ const SLIDES = [
   { id: "03", src: "/works/work-03.png", label: "Work 03" },
   { id: "04", src: "/works/work-04.png", label: "Work 04" },
   { id: "05", src: "/works/work-05.png", label: "Work 05" },
+  { id: "06", src: "/works/work-06.png", label: "Work 06" },
 ];
 
 const SWIPE_THRESHOLD = 50;
