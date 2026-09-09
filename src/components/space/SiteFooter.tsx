@@ -36,7 +36,7 @@ export function SiteFooter() {
       as="footer"
       /* justify-items-start because grid items stretch by default, which
          pulled the pill out to the full width of its column. */
-      className="mt-[85px] grid w-full sm:mt-[90px] grid-cols-[1fr_max-content] items-center justify-items-start gap-x-[20px] gap-y-[24px] sm:gap-y-[20px]"
+      className="mt-[80px] grid w-full sm:mt-[90px] grid-cols-[1fr_max-content] items-center justify-items-start gap-x-[20px] gap-y-[24px] sm:gap-y-[20px]"
     >
       <p
         className="text-trim whitespace-nowrap font-heading text-[16px] font-bold capitalize leading-none tracking-[0.32px] text-ink"

@@ -53,7 +53,7 @@ export function Experiences() {
   return (
     <Reveal
       as="section"
-      className="mt-[63px] flex w-full flex-col items-start gap-[30px] sm:mt-[68px]"
+      className="mt-[58px] flex w-full flex-col items-start gap-[30px] sm:mt-[68px]"
     >
       <SectionHeading
         title="Experiences"

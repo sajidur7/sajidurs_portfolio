@@ -38,7 +38,7 @@ export function TechStack() {
   return (
     <Reveal
       as="section"
-      className="mt-[83px] flex w-full flex-col items-start gap-[30px] sm:mt-[88px]"
+      className="mt-[78px] flex w-full flex-col items-start gap-[30px] sm:mt-[88px]"
     >
       <SectionHeading title="Tech Stack" caption="Tools I Use as a Designer" />
 

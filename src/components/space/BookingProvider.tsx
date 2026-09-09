@@ -186,32 +186,36 @@ export function BookingProvider({ children }: { children: ReactNode }) {
       keeps the theme right on a reopen; re-sending it here is what actually
       makes the ground transparent.
     */
-    Cal.ns![CAL_NAMESPACE]("on", {
-      action: "linkReady",
-      /*
-        The whole config again, not just the variables. Sent on its own, Cal
-        has no theme to resolve `cssVarsPerTheme` against and falls back to its
-        default ground — which is how a white slab appeared behind a booker
-        that was still rendering dark.
-      */
-      callback: applyUi,
-    });
+    /*
+      Every point the booker can lose the setting.
+
+      `linkReady` is the first render. `__routeChanged` is the step change —
+      picking a time swaps the calendar for the booking form, and the new view
+      comes up on Cal's own default ground, which is where a slab reappeared
+      several clicks in. `__dimensionChanged` fires whenever the frame resizes,
+      which covers step changes the route event misses.
+
+      The whole config goes each time, not just the variables: sent alone, Cal
+      has no theme to resolve `cssVarsPerTheme` against and falls back to its
+      default ground — a white slab behind a booker still rendering dark.
+    */
+    for (const action of ["linkReady", "__routeChanged", "__dimensionChanged"]) {
+      Cal.ns![CAL_NAMESPACE]("on", { action, callback: applyUi });
+    }
 
     /*
-      And again on a timer, because none of the above is a guarantee.
+      And a heartbeat under all of it, because none of those is a guarantee.
 
       Everything except the CSS variables reaches the booker through its URL.
       The variables travel as a message, so they only stick if they arrive
-      while the booker is listening — and that window moves with the network,
+      while the booker is listening, and that window moves with the network,
       the embed script's own load, and whether this is a first open or a
-      reopen. Miss it and an opaque slab sits behind the card.
-
-      The call is idempotent, so re-asserting it a few times over the first
-      few seconds costs nothing and closes every gap the event alone leaves.
+      reopen. The call is idempotent and the panel is short-lived, so a second
+      of it costs nothing and leaves no state the events can miss.
     */
-    const retries = [300, 900, 2000, 4000].map((ms) => window.setTimeout(applyUi, ms));
+    const beat = window.setInterval(applyUi, 1000);
 
-    return () => retries.forEach((id) => window.clearTimeout(id));
+    return () => window.clearInterval(beat);
   }, [open]);
 
   useEffect(() => {
