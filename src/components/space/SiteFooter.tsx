@@ -59,7 +59,9 @@ export function SiteFooter() {
       {/* Spans both columns on a phone, where the caption is hidden and column
           two is only as wide as the accent dot. */}
       <div className="col-span-2 flex w-full flex-wrap items-center justify-between gap-x-[41px] gap-y-[14px] sm:col-span-1">
-        <p className="text-trim whitespace-nowrap font-body text-[14px] leading-normal text-ink">
+        {/* Dropped on a phone — with the label gone the icons fall to the
+            start of the row, lining up under the CTA. */}
+        <p className="text-trim hidden whitespace-nowrap font-body text-[14px] leading-normal text-ink sm:block">
           {"Find Me Online :"}
         </p>
           <ul className="flex items-center gap-[20px]">
