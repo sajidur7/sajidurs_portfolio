@@ -428,9 +428,36 @@ body {
  * The social marks are a dark silhouette with white knockouts, so on a dark
  * background they need inverting rather than recolouring. Held back from full
  * strength so they read as soft grey instead of pure white.
+ *
+ * Light gets the same treatment by the other route. At full ink they were the
+ * loudest thing in the footer, louder than the caption they sit beside; black
+ * at 50% over the canvas resolves to #8d8d8d, which is the muted token exactly.
+ *
+ * Opacity rather than a filter, because these are silhouettes with white
+ * knockouts — anything that greys the silhouette greys the knockouts with it
+ * and the marks stop reading as their logos.
+ *
+ * Either way they come back to full strength under the pointer, so they are
+ * recessive until someone reaches for one.
  */
+.social-mark {
+  transition: opacity 0.3s var(--ease-smooth), filter 0.3s var(--ease-smooth);
+}
+
+html:not([data-theme="dark"]) .social-mark {
+  opacity: 0.5;
+}
+
+html:not([data-theme="dark"]) a:hover .social-mark {
+  opacity: 1;
+}
+
 html[data-theme="dark"] .social-mark {
   filter: invert(1) brightness(0.78);
+}
+
+html[data-theme="dark"] a:hover .social-mark {
+  filter: invert(1);
 }
 
 /* Five tech logos are near-black and vanish on dark; the design supplies white
