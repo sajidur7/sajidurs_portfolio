@@ -12,15 +12,15 @@ import { SectionHeading } from "./SectionHeading";
  * at full width and redistributes on its own as the column narrows. Below that
  * they wrap onto a second row.
  *
- * `label` is what the hover tooltip shows; the design names the Claude mark
- * "Claude AI", so these are product names rather than the bare alt text.
+ * `label` is what the hover tooltip shows — product names rather than bare alt
+ * text.
  */
 const STACK = [
   { src: "/figma/stack-01.png", label: "Figma", box: { w: 24, h: 34 }, img: { w: 34, h: 34, x: -5, y: 0 } },
   { src: "/figma/stack-02.png", label: "Framer", box: { w: 24, h: 34 }, img: { w: 34, h: 34, x: -5, y: 0 } },
-  { src: "/figma/stack-03.png", dark: "/figma/stack-03-dark.png", label: "Spline", box: { w: 32, h: 34 }, img: { w: 36.614, h: 36.125, x: -2.307, y: -1.061 } },
+  { src: "/figma/stack-03.png", dark: "/figma/stack-03-dark.png", label: "Cursor", box: { w: 32, h: 34 }, img: { w: 36.614, h: 36.125, x: -2.307, y: -1.061 } },
   { src: "/figma/stack-04.png", label: "VS Code", box: { w: 34, h: 34 } },
-  { src: "/figma/stack-05.png", label: "Claude AI", box: { w: 34, h: 34 }, img: { w: 36.428, h: 36.428, x: -1.214, y: -1.214 } },
+  { src: "/figma/stack-05.png", label: "Claude", box: { w: 34, h: 34 }, img: { w: 36.428, h: 36.428, x: -1.214, y: -1.214 } },
   { src: "/figma/stack-06.png", dark: "/figma/stack-06-dark.png", label: "ChatGPT", box: { w: 34, h: 34 } },
   { src: "/figma/stack-07.png", label: "Jira", box: { w: 34, h: 34 } },
   { src: "/figma/stack-08.png", dark: "/figma/stack-08-dark.png", label: "Notion", box: { w: 34, h: 34 } },

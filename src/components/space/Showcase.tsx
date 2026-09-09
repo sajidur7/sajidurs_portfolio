@@ -45,7 +45,11 @@ export function Showcase() {
   const dragged = useRef(false);
   const slideRefs = useRef<Array<HTMLImageElement | null>>([]);
   const fromRect = useRef<DOMRect | null>(null);
-  const bigRef = useRef<HTMLImageElement>(null);
+  const bigRef = useRef<HTMLDivElement>(null);
+  /* Only an open travels from the thumbnail. Stepping between works while
+     expanded changes the same element's contents, and replaying the FLIP there
+     would fly the new image in from a card that is nowhere near the screen. */
+  const flipping = useRef(false);
 
   const go = useCallback((next: number) => {
     setIndex((next + SLIDES.length) % SLIDES.length);
@@ -54,9 +58,25 @@ export function Showcase() {
   const open = (position: number) => {
     const source = slideRefs.current[position];
     fromRect.current = source ? source.getBoundingClientRect() : null;
+    flipping.current = true;
     setClosing(false);
     setExpanded(position);
   };
+
+  /*
+    Move between works without leaving the expanded view. The carousel behind
+    follows, so closing still returns the image to the card it came from — and
+    so the position is not lost when the visitor taps out.
+  */
+  const step = useCallback(
+    (delta: number) => {
+      if (expanded === null) return;
+      const next = (expanded + delta + SLIDES.length) % SLIDES.length;
+      setExpanded(next);
+      setIndex(next);
+    },
+    [expanded],
+  );
 
   const close = useCallback(() => {
     const el = bigRef.current;
@@ -96,6 +116,8 @@ export function Showcase() {
      scale is enough and nothing squashes on the way. */
   useLayoutEffect(() => {
     if (expanded === null || closing) return;
+    if (!flipping.current) return;
+    flipping.current = false;
     const el = bigRef.current;
     const from = fromRect.current;
     if (!el || !from) return;
@@ -306,22 +328,58 @@ export function Showcase() {
           onClick={close}
           data-open={!closing}
           /*
-            A flat 57% ink wash rather than a blur: the same backdrop the
+            A flat 60% ink wash rather than a blur: the same backdrop the
             booking panel uses, and it does not invert with the theme — the
             expanded work should read against one constant ground.
           */
-          className="fixed inset-0 z-[200] flex cursor-zoom-out items-center justify-center bg-[#232323]/57 p-[20px] opacity-0 transition-opacity duration-[520ms] ease-[var(--ease-smooth)] data-[open=true]:opacity-100 sm:p-[40px]"
+          className="fixed inset-0 z-[200] flex cursor-zoom-out items-center justify-center bg-[#232323]/60 p-[20px] opacity-0 transition-opacity duration-[520ms] ease-[var(--ease-smooth)] data-[open=true]:opacity-100 sm:p-[40px]"
         >
-          <img
+          {/* The wrapper shrink-wraps the image and carries the FLIP, so the
+              tap zones travel with it instead of sitting still while it
+              moves. */}
+          <div
             ref={bigRef}
-            src={SLIDES[expanded].src}
-            alt={SLIDES[expanded].label}
-            draggable={false}
             onClick={(event) => event.stopPropagation()}
-            /* Capped below the viewport so the work sits in some breathing
-               room rather than filling the screen edge to edge. */
-            className="block max-h-[78vh] max-w-[92vw] cursor-default select-none rounded-[20px] object-contain shadow-[0_40px_90px_-20px_rgba(0,0,0,0.45)] sm:max-w-[80vw]"
-          />
+            className="relative cursor-default"
+          >
+            <img
+              src={SLIDES[expanded].src}
+              alt={SLIDES[expanded].label}
+              draggable={false}
+              /* Capped below the viewport so the work sits in some breathing
+                 room rather than filling the screen edge to edge. */
+              className="block max-h-[78vh] max-w-[92vw] select-none rounded-[20px] object-contain shadow-[0_40px_90px_-20px_rgba(0,0,0,0.45)] sm:max-w-[80vw]"
+            />
+
+            {/*
+              Phone-only: the arrows and the keyboard are both out of reach
+              once a work fills the screen, so the outer quarter of the image
+              on each side steps through the set. A quarter is wide enough to
+              hit with a thumb and still leaves half the work as dead space, so
+              a tap meant for the picture does not move it.
+
+              They stay out of the way of the backdrop: a tap outside still
+              closes, and these stop short of the edge.
+            */}
+            <button
+              type="button"
+              aria-label="Previous work"
+              onClick={(event) => {
+                event.stopPropagation();
+                step(-1);
+              }}
+              className="absolute inset-y-0 left-0 w-1/4 sm:hidden"
+            />
+            <button
+              type="button"
+              aria-label="Next work"
+              onClick={(event) => {
+                event.stopPropagation();
+                step(1);
+              }}
+              className="absolute inset-y-0 right-0 w-1/4 sm:hidden"
+            />
+          </div>
         </div>
       )}
     </section>
