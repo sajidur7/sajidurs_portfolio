@@ -16,21 +16,22 @@ import { SectionHeading } from "./SectionHeading";
  * Figma states them as a share of the frame, so they have to be recomputed
  * whenever the boxes change rather than scaled by eye.
  *
- * `label` is what the hover tooltip shows — product names rather than bare alt
- * text.
+ * `label` is the product name, used for the alt text and the key. `tip` is what
+ * the tooltip actually says — the mark already identifies the tool, so repeating
+ * its name on hover tells the visitor nothing they cannot see.
  */
 const STACK = [
-  { src: "/figma/stack-01.png", label: "Figma", box: { w: 21, h: 30 }, img: { w: 29.75, h: 30, x: -4.375, y: 0 } },
-  { src: "/figma/stack-02.png", label: "Framer", box: { w: 21, h: 30 }, img: { w: 29.75, h: 30, x: -4.375, y: 0 } },
-  { src: "/figma/stack-03.png", dark: "/figma/stack-03-dark.png", label: "Cursor", box: { w: 27, h: 30 }, img: { w: 30.893, h: 31.875, x: -1.947, y: -0.936 } },
-  { src: "/figma/stack-04.png", label: "VS Code", box: { w: 30, h: 30 } },
-  { src: "/figma/stack-05.png", label: "Claude", box: { w: 30, h: 30 }, img: { w: 32.142, h: 32.142, x: -1.071, y: -1.071 } },
-  { src: "/figma/stack-06.png", dark: "/figma/stack-06-dark.png", label: "ChatGPT", box: { w: 30, h: 30 } },
-  { src: "/figma/stack-07.png", label: "Jira", box: { w: 30, h: 30 } },
-  { src: "/figma/stack-08.png", dark: "/figma/stack-08-dark.png", label: "Notion", box: { w: 30, h: 30 } },
-  { src: "/figma/stack-09.png", label: "Slack", box: { w: 30, h: 30 } },
-  { src: "/figma/stack-10.png", dark: "/figma/stack-10-dark.png", label: "GitHub", box: { w: 30, h: 30 } },
-  { src: "/figma/stack-11.png", dark: "/figma/stack-11-dark.png", label: "Vercel", box: { w: 30, h: 30 } },
+  { src: "/figma/stack-01.png", label: "Figma", tip: "Making things pretty", box: { w: 21, h: 30 }, img: { w: 29.75, h: 30, x: -4.375, y: 0 } },
+  { src: "/figma/stack-02.png", label: "Framer", tip: "Pixels go live", box: { w: 21, h: 30 }, img: { w: 29.75, h: 30, x: -4.375, y: 0 } },
+  { src: "/figma/stack-03.png", dark: "/figma/stack-03-dark.png", label: "Cursor", tip: "My coding sidekick", box: { w: 27, h: 30 }, img: { w: 30.893, h: 31.875, x: -1.947, y: -0.936 } },
+  { src: "/figma/stack-04.png", label: "VS Code", tip: "When things get serious", box: { w: 30, h: 30 } },
+  { src: "/figma/stack-05.png", label: "Claude", tip: "Second opinion, always", box: { w: 30, h: 30 }, img: { w: 32.142, h: 32.142, x: -1.071, y: -1.071 } },
+  { src: "/figma/stack-06.png", dark: "/figma/stack-06-dark.png", label: "ChatGPT", tip: "My 2AM coworker", box: { w: 30, h: 30 } },
+  { src: "/figma/stack-07.png", label: "Jira", tip: "Tasks go to multiply", box: { w: 30, h: 30 } },
+  { src: "/figma/stack-08.png", dark: "/figma/stack-08-dark.png", label: "Notion", tip: "Organized chaos, mostly", box: { w: 30, h: 30 } },
+  { src: "/figma/stack-09.png", label: "Slack", tip: "“Quick call?” Sure", box: { w: 30, h: 30 } },
+  { src: "/figma/stack-10.png", dark: "/figma/stack-10-dark.png", label: "GitHub", tip: "Code lives here", box: { w: 30, h: 30 } },
+  { src: "/figma/stack-11.png", dark: "/figma/stack-11-dark.png", label: "Vercel", tip: "Ship it and pray", box: { w: 30, h: 30 } },
 ];
 
 export function TechStack() {
@@ -83,13 +84,21 @@ export function TechStack() {
               })()}
             </span>
 
-            {/* Node 7:334 — centred under the icon, 10px clear of it. */}
+            {/*
+              Node 7:334 — centred under the icon, 10px clear of it.
+
+              Pointer sizes only. The taglines are far longer than the names
+              they replaced, and centred under an icon at the start of a
+              wrapped row they hang off the left of a phone screen. There is no
+              hover on a phone to ask for one anyway — what showed them was
+              sticky hover after a tap.
+            */}
             <span
               aria-hidden
-              className="pointer-events-none absolute left-1/2 top-full z-30 mt-[10px] flex h-[30px] -translate-x-1/2 translate-y-[4px] items-center justify-center whitespace-nowrap rounded-full bg-ink px-[12px] opacity-0 transition-[opacity,transform] duration-300 ease-[var(--ease-smooth)] group-hover:translate-y-0 group-hover:opacity-100"
+              className="pointer-events-none absolute left-1/2 top-full z-30 mt-[10px] hidden h-[30px] -translate-x-1/2 sm:flex translate-y-[4px] items-center justify-center whitespace-nowrap rounded-full bg-ink px-[12px] opacity-0 transition-[opacity,transform] duration-300 ease-[var(--ease-smooth)] group-hover:translate-y-0 group-hover:opacity-100"
             >
-              <span className="text-trim font-body text-[14px] leading-[22px] text-canvas">
-                {tool.label}
+              <span className="text-trim font-body text-[13px] leading-[22px] text-canvas">
+                {tool.tip}
               </span>
             </span>
           </Reveal>
