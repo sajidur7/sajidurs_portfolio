@@ -164,15 +164,30 @@ body {
   }
 }
 
+/*
+ * The container follows the pointer on every device, because the toast rides
+ * on it and a tap deserves that feedback too. Only the arrow itself is held
+ * back to devices that actually have a pointer.
+ */
 .cursor-dot {
   position: fixed;
   top: 0;
   left: 0;
   z-index: 9999;
   pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.2s linear;
   will-change: transform;
+}
+
+.cursor-dot img {
+  opacity: 0;
+}
+
+.cursor-dot[data-active="true"] img {
+  opacity: 1;
+}
+
+.cursor-dot[data-fine="false"] img {
+  display: none;
 }
 
 /* The pointer swells slightly over anything clickable — from the tip, so the
@@ -183,7 +198,9 @@ body {
   width: 20px;
   height: 22px;
   max-width: none;
-  transition: transform 0.25s var(--ease-smooth);
+  transition:
+    transform 0.25s var(--ease-smooth),
+    opacity 0.2s linear;
   /* The tip, scaled from the artwork's own 29×31 coordinates. */
   transform-origin: 1.99px 0.605px;
 }

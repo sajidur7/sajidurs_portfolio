@@ -48,13 +48,20 @@ export function CustomCursor() {
   const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!window.matchMedia("(pointer: fine)").matches) return;
-
     const dot = dotRef.current;
     if (!dot) return;
 
+    const fine = window.matchMedia("(pointer: fine)").matches;
+
     const root = document.documentElement;
-    root.classList.add("has-custom-cursor");
+
+    /*
+      The arrow is the only part that needs a real pointer. Sparks and the
+      toast are just as useful under a finger, so they run everywhere and only
+      the drawn cursor — and hiding the native one — is gated on `fine`.
+    */
+    if (fine) root.classList.add("has-custom-cursor");
+    dot.dataset.fine = String(fine);
 
     let targetX = window.innerWidth / 2;
     let targetY = window.innerHeight / 2;
@@ -93,8 +100,8 @@ export function CustomCursor() {
         started = true;
         x = targetX;
         y = targetY;
-        dot.style.opacity = "1";
       }
+      dot.dataset.active = "true";
 
       const hot = Boolean(
         (event.target as HTMLElement | null)?.closest("a, button, [role='button']"),
@@ -103,10 +110,10 @@ export function CustomCursor() {
     };
 
     const onLeave = () => {
-      dot.style.opacity = "0";
+      dot.dataset.active = "false";
     };
     const onEnter = () => {
-      if (started) dot.style.opacity = "1";
+      if (started) dot.dataset.active = "true";
     };
 
     const loop = () => {
@@ -116,7 +123,24 @@ export function CustomCursor() {
       frame = requestAnimationFrame(loop);
     };
 
-    const onDown = (event: PointerEvent) => spark(event.clientX, event.clientY);
+    const onDown = (event: PointerEvent) => {
+      /*
+        A tap has no preceding move, so place the dot on the touch point
+        immediately — without this the toast would fly in from wherever the
+        pointer last was, or from the middle of the screen on first contact.
+      */
+      targetX = event.clientX;
+      targetY = event.clientY;
+      if (!started || event.pointerType !== "mouse") {
+        started = true;
+        x = targetX;
+        y = targetY;
+        dot.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      }
+      if (fine) dot.dataset.active = "true";
+
+      spark(event.clientX, event.clientY);
+    };
 
     /* "C" copies the email address. Bare key only — Cmd/Ctrl+C has to keep
        copying the selection, and typing in a field is never a shortcut. */
@@ -180,7 +204,9 @@ export function CustomCursor() {
         width={20}
         height={22}
         draggable={false}
-        style={{ display: "block", marginLeft: -1.99, marginTop: -0.605 }}
+        /* No display here: an inline value would outrank the rule that hides
+           the arrow on touch. Preflight already makes images block. */
+        style={{ marginLeft: -1.99, marginTop: -0.605 }}
       />
 
       {/* Rides along at the pointer's head. */}
