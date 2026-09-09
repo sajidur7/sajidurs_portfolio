@@ -70,14 +70,15 @@ export function Showcase() {
     const from = live?.getBoundingClientRect() ?? fromRect.current;
 
     /*
-      The same journey as the open, run backwards — same duration, and the
-      easing mirrored rather than repeated. Reusing the opening ease-out here
-      would fling the image away and then creep it into the card, which is
-      what made the close feel like a different animation from the expand.
+      The same journey as the open, in reverse, on the same duration and the
+      same curve. A mirrored ease-in is the textbook answer here and it was
+      wrong for this: it creeps off the mark before it accelerates, which
+      reads as a slow close even at an identical duration. Repeating the
+      ease-out is what actually makes the two feel like one gesture.
     */
     if (el && from) {
       const to = el.getBoundingClientRect();
-      el.style.transition = `transform ${FLIP_MS}ms var(--ease-smooth-in)`;
+      el.style.transition = `transform ${FLIP_MS}ms var(--ease-smooth)`;
       el.style.transform = `translate(${from.left + from.width / 2 - (to.left + to.width / 2)}px, ${
         from.top + from.height / 2 - (to.top + to.height / 2)
       }px) scale(${from.width / to.width})`;
@@ -305,11 +306,11 @@ export function Showcase() {
           onClick={close}
           data-open={!closing}
           /*
-            A flat 50% ink wash rather than a blur: the same backdrop the
+            A flat 57% ink wash rather than a blur: the same backdrop the
             booking panel uses, and it does not invert with the theme — the
             expanded work should read against one constant ground.
           */
-          className="fixed inset-0 z-[200] flex cursor-zoom-out items-center justify-center bg-[#232323]/50 p-[20px] opacity-0 transition-opacity duration-[520ms] ease-[var(--ease-smooth-in)] data-[open=true]:opacity-100 data-[open=true]:ease-[var(--ease-smooth)] sm:p-[40px]"
+          className="fixed inset-0 z-[200] flex cursor-zoom-out items-center justify-center bg-[#232323]/57 p-[20px] opacity-0 transition-opacity duration-[520ms] ease-[var(--ease-smooth)] data-[open=true]:opacity-100 sm:p-[40px]"
         >
           <img
             ref={bigRef}

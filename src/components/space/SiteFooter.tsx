@@ -53,8 +53,22 @@ export function SiteFooter() {
         <StatusDot />
       </span>
 
-      {/* Text only — the label carries it, so no brand mark. */}
-      <MagneticButton href={WHATSAPP_URL} external label="Drop a Message" />
+      {/* Figma node 38:183 — solid pill, the 16px WhatsApp mark 6px ahead of
+          the label. The label runs at the shared 15px rather than the frame's
+          14, so it matches Let's Talk and See Portfolio. */}
+      <MagneticButton
+        href={WHATSAPP_URL}
+        external
+        label="Start a Chat"
+        gap={6}
+        icon={
+          <img
+            src="/figma/whatsapp-mark.png"
+            alt=""
+            className="block size-[16px] max-w-none object-contain"
+          />
+        }
+      />
 
       {/* Stays in column two at every size, so on a phone — where the label is
           hidden — the icons share the CTA's row, right-aligned and centred on

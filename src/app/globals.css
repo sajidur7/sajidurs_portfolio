@@ -24,9 +24,6 @@
 
   /* One easing for everything, so the whole page decelerates the same way. */
   --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
-  /* Its exact mirror — control points reflected through (0.5, 0.5) — for a
-     motion that has to read as the same motion played backwards. */
-  --ease-smooth-in: cubic-bezier(0.7, 0, 0.84, 0);
 
 
   --animate-blip: blip 2s cubic-bezier(0, 0, 0.2, 1) infinite;
