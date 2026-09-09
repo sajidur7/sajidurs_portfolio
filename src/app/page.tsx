@@ -44,10 +44,15 @@ export default function Home() {
         mask ramps the blur and the tint in from nothing at the top edge to full
         strength at the bottom, so content resolves out of the haze as it
         scrolls up rather than crossing a hard line.
+
+        Its height is the nav's clearance twice over plus the nav itself —
+        30 + 50 + 30 on a desktop, 20 + 50 + 20 on a phone — so the pill sits
+        centred in the haze with equal air above and below. Change the nav's
+        height and this has to follow, or the top gap drifts.
       */}
       <div
         aria-hidden
-        className="pointer-events-none fixed bottom-0 left-0 z-40 h-[108px] w-full bg-[linear-gradient(to_bottom,transparent,var(--scrim))] backdrop-blur-[3.5px] [mask-image:linear-gradient(to_bottom,transparent_0%,#000_70%)] [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,#000_70%)]"
+        className="pointer-events-none fixed bottom-0 left-0 z-40 h-[90px] w-full sm:h-[110px] bg-[linear-gradient(to_bottom,transparent,var(--scrim))] backdrop-blur-[3.5px] [mask-image:linear-gradient(to_bottom,transparent_0%,#000_70%)] [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,#000_70%)]"
       />
 
       <SpaceNav />

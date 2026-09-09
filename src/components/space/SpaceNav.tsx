@@ -37,7 +37,7 @@ export function SpaceNav() {
         blur, is what mobile Safari draws a coloured seam at. `isolate` keeps
         those child filters compositing inside the pill.
       */
-      className="fixed bottom-[30px] left-0 right-0 z-50 mx-auto flex w-fit max-w-[calc(100vw-24px)] animate-fade-in flex-col items-start isolate overflow-hidden rounded-full bg-surface p-[4px]"
+      className="fixed bottom-[20px] left-0 right-0 sm:bottom-[30px] z-50 mx-auto flex w-fit max-w-[calc(100vw-24px)] animate-fade-in flex-col items-start isolate overflow-hidden rounded-full bg-surface p-[4px]"
       style={{ animationDelay: "450ms" }}
     >
       <div className="flex items-center gap-[4px]">
