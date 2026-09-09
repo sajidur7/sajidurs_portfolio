@@ -33,13 +33,13 @@ const EXPERIENCES = [
     logo: { src: "/figma/logo-fiverr.svg", background: "#1dbf73", box: 34, width: 16, height: 19 },
   },
   {
-    company: "TechSfera",
+    company: "BigGorillaApps",
     role: "UI Designer",
     commitment: "Full-time",
     period: " 08 . 2021 — 03 . 2022",
     tenure: "6m",
     href: "",
-    logo: { src: "/figma/logo-techsfera-red.svg", background: "#cd1632", box: 34, width: 22, height: 18 },
+    logo: { src: "/figma/logo-biggorillaapps.svg", background: "#cd1632", box: 34, width: 22, height: 18 },
   },
 ];
 
