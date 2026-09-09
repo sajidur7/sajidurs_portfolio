@@ -1,7 +1,6 @@
 "use client";
 
 /* eslint-disable @next/next/no-img-element */
-import type { CSSProperties } from "react";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Reveal } from "./Reveal";
 
@@ -39,6 +38,12 @@ const FLIP_MS = 560;
 
 /* The caption bar's two repeated pieces. Both inherit the bar's colour, so the
    theme swap is one property on the container rather than eleven. */
+/* Straight from icon-chevron-left/right.svg, geometry untouched. */
+const CHEVRON_LEFT =
+  "M5.69996 0.700046C5.69996 0.700046 0.700011 4.38249 0.7 5.70009C0.699989 7.01768 5.7 10.7 5.7 10.7";
+const CHEVRON_RIGHT =
+  "M0.700085 0.700046C0.700085 0.700046 5.70004 4.38249 5.70005 5.70009C5.70006 7.01768 0.700046 10.7 0.700046 10.7";
+
 /* What the bar calls the set. One word for all five, as the frame shows it —
    swap it for a per-slide field the day the works get their own names. */
 const CAPTION_NAME = "Proto";
@@ -480,9 +485,9 @@ export function Showcase() {
               <span className={CAPTION_DOT} />
               <span className="flex items-center gap-[2px]">
                 {([
-                  ["Previous work", -1, "/figma/icon-chevron-left.svg"],
-                  ["Next work", 1, "/figma/icon-chevron-right.svg"],
-                ] as const).map(([label, delta, glyph]) => (
+                  ["Previous work", -1, CHEVRON_LEFT],
+                  ["Next work", 1, CHEVRON_RIGHT],
+                ] as const).map(([label, delta, path]) => (
                   <button
                     key={label}
                     type="button"
@@ -491,24 +496,35 @@ export function Showcase() {
                     className="group flex size-[14px] shrink-0 items-center justify-center"
                   >
                     {/*
-                      Masked rather than drawn, so the chevron takes the bar's
-                      own colour instead of the accent the file is stroked in.
+                      Drawn here rather than masked from the file, and the
+                      viewBox is padded, because the export has none: its 1.4
+                      round-capped stroke touches all four edges exactly. At
+                      natural size in an <img> that is fine, but rasterised
+                      into a 4.48px mask box the boundary is where the tips
+                      lost half a pixel — visible on a phone, where the device
+                      ratio makes that half-pixel a real one.
 
-                      4.48 x 7.98 because the exported artwork carries 0.7 of
-                      padding for its own stroke: the glyph inside it lands at
-                      the frame's 3.5 x 7, and the 1.4 stroke scales to the
-                      0.98 the smaller icon draws.
+                      Same drawn size as before: the 0.7 scale puts the glyph
+                      at the frame's 3.5 x 7 with a 0.98 stroke, now with room
+                      around it. currentColor keeps it on the bar's own ink
+                      rather than the accent the file is stroked in.
                     */}
-                    <span
-                      className="nav-glyph transition-transform duration-300 ease-[var(--ease-smooth)] group-active:scale-90"
-                      style={
-                        {
-                          width: 4.48,
-                          height: 7.98,
-                          "--glyph": `url(${glyph})`,
-                        } as CSSProperties
-                      }
-                    />
+                    <svg
+                      viewBox="-0.7 -0.7 7.80005 12.8001"
+                      width={5.46}
+                      height={8.96}
+                      fill="none"
+                      aria-hidden
+                      className="block overflow-visible transition-transform duration-300 ease-[var(--ease-smooth)] group-active:scale-90"
+                    >
+                      <path
+                        d={path}
+                        stroke="currentColor"
+                        strokeWidth="1.4"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
                   </button>
                 ))}
               </span>
