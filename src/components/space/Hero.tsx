@@ -77,7 +77,7 @@ export function Hero() {
         the body face renders it at. The -2px lifts the 16px icon box to the
         y-offset it has in the frame, two pixels above the text's cap line.
       */}
-      <Reveal className="mt-[23px] flex flex-wrap items-start gap-[6px]" delay={240}>
+      <Reveal className="mt-[23px] flex flex-wrap items-start gap-[8px]" delay={240}>
         <p className="text-trim font-body text-[15px] leading-[22px] text-muted">
           Drop me an{" "}
           <a
@@ -96,19 +96,38 @@ export function Hero() {
             download my CV
           </a>
         </p>
-        {/* The icon is a second route to the same file, not decoration. */}
+        {/*
+          The icon is a second route to the same file, not decoration.
+
+          Drawn inline from frame 14:69's component so the stroke can take the
+          accent token. Its 15.5 viewBox renders into a 12px box — the ink size
+          measured off the frame — which scales the 1.5 stroke to the ~1.16 the
+          design draws. The box is flush with the artwork, so the row's 8px gap
+          is the gap the frame shows between the text and the icon.
+        */}
         <a
           href={CV_URL}
           target="_blank"
           rel="noreferrer"
           aria-label="Download my CV"
-          className="relative -mt-[2px] block size-[16px] shrink-0 overflow-hidden transition-transform duration-300 ease-[var(--ease-smooth)] hover:scale-110"
+          className="mt-[1px] block shrink-0 text-accent transition-transform duration-300 ease-[var(--ease-smooth)] hover:scale-110"
         >
-          <img
-            src="/figma/icon-file-download.svg"
-            alt=""
-            className="absolute left-[1.733px] top-[0.733px] block h-[14.533px] w-[12.533px] max-w-none"
-          />
+          <svg width="12" height="12" viewBox="0 0 15.5 15.5" fill="none" className="block">
+            <path
+              d="M7.75 10.75L7.75 0.75M7.75 10.75C7.04977 10.75 5.74153 8.7557 5.25 8.25M7.75 10.75C8.45023 10.75 9.75847 8.7557 10.25 8.25"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M0.75 14.75H14.7501"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         </a>
       </Reveal>
 

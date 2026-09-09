@@ -18,15 +18,15 @@ import { SectionHeading } from "./SectionHeading";
 const STACK = [
   { src: "/figma/stack-01.png", label: "Figma", box: { w: 24, h: 34 }, img: { w: 34, h: 34, x: -5, y: 0 } },
   { src: "/figma/stack-02.png", label: "Framer", box: { w: 24, h: 34 }, img: { w: 34, h: 34, x: -5, y: 0 } },
-  { src: "/figma/stack-03.png", label: "Spline", box: { w: 32, h: 34 }, img: { w: 36.614, h: 36.125, x: -2.307, y: -1.061 } },
+  { src: "/figma/stack-03.png", dark: "/figma/stack-03-dark.png", label: "Spline", box: { w: 32, h: 34 }, img: { w: 36.614, h: 36.125, x: -2.307, y: -1.061 } },
   { src: "/figma/stack-04.png", label: "VS Code", box: { w: 34, h: 34 } },
   { src: "/figma/stack-05.png", label: "Claude AI", box: { w: 34, h: 34 }, img: { w: 36.428, h: 36.428, x: -1.214, y: -1.214 } },
-  { src: "/figma/stack-06.png", label: "ChatGPT", box: { w: 34, h: 34 } },
+  { src: "/figma/stack-06.png", dark: "/figma/stack-06-dark.png", label: "ChatGPT", box: { w: 34, h: 34 } },
   { src: "/figma/stack-07.png", label: "Jira", box: { w: 34, h: 34 } },
-  { src: "/figma/stack-08.png", label: "Notion", box: { w: 34, h: 34 } },
+  { src: "/figma/stack-08.png", dark: "/figma/stack-08-dark.png", label: "Notion", box: { w: 34, h: 34 } },
   { src: "/figma/stack-09.png", label: "Slack", box: { w: 34, h: 34 } },
-  { src: "/figma/stack-10.png", label: "GitHub", box: { w: 34, h: 34 } },
-  { src: "/figma/stack-11.png", label: "Vercel", box: { w: 34, h: 34 } },
+  { src: "/figma/stack-10.png", dark: "/figma/stack-10-dark.png", label: "GitHub", box: { w: 34, h: 34 } },
+  { src: "/figma/stack-11.png", dark: "/figma/stack-11-dark.png", label: "Vercel", box: { w: 34, h: 34 } },
 ];
 
 export function TechStack() {
@@ -50,16 +50,33 @@ export function TechStack() {
               and so the hover lift moves the logo without moving the tooltip.
             */}
             <span className="relative block size-full overflow-hidden transition-transform duration-300 ease-[var(--ease-smooth)] group-hover:-translate-y-[4px] group-hover:scale-110">
-              <img
-                src={tool.src}
-                alt={tool.label}
-                className="absolute block max-w-none"
-                style={
-                  tool.img
-                    ? { width: tool.img.w, height: tool.img.h, left: tool.img.x, top: tool.img.y }
-                    : { inset: 0, width: "100%", height: "100%", objectFit: "cover" }
-                }
-              />
+              {(() => {
+                const geometry = tool.img
+                  ? { width: tool.img.w, height: tool.img.h, left: tool.img.x, top: tool.img.y }
+                  : ({ inset: 0, width: "100%", height: "100%", objectFit: "cover" } as const);
+
+                return (
+                  <>
+                    <img
+                      src={tool.src}
+                      alt={tool.label}
+                      className={`absolute max-w-none ${tool.dark ? "logo-light" : ""}`}
+                      style={geometry}
+                    />
+                    {/* Near-black marks are invisible on dark; the design ships
+                        white versions, which take over with the theme. */}
+                    {tool.dark ? (
+                      <img
+                        src={tool.dark}
+                        alt=""
+                        aria-hidden
+                        className="logo-dark absolute max-w-none"
+                        style={geometry}
+                      />
+                    ) : null}
+                  </>
+                );
+              })()}
             </span>
 
             {/* Node 7:334 — centred under the icon, 10px clear of it. */}

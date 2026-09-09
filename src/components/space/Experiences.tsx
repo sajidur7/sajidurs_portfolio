@@ -63,13 +63,7 @@ export function Experiences() {
 
           return (
             <Fragment key={`${item.company}-${item.period}`}>
-              {index > 0 && (
-                <img
-                  src="/figma/line-divider-lg.svg"
-                  alt=""
-                  className="block h-px w-full max-w-none"
-                />
-              )}
+              {index > 0 && <span aria-hidden className="rule-dashed block w-full" />}
 
               <Reveal className="w-full" delay={index * 90}>
                 <Row

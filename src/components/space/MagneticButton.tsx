@@ -27,10 +27,14 @@ const PULL = 2;
 type Variant = "solid" | "outline";
 
 const VARIANTS: Record<Variant, { shell: string; label: string; ink: string }> = {
-  // Accent floods the dark pill.
+  /*
+    Accent floods the pill. The label has to switch to the on-accent colour on
+    hover: in light it already matches, but in dark the resting label is near
+    black and would be unreadable once the red arrives.
+  */
   solid: {
     shell: "bg-ink",
-    label: "text-canvas",
+    label: "text-canvas group-hover:text-on-accent",
     ink: "var(--color-accent)",
   },
   // Ink floods the light pill, so the label has to invert with it.

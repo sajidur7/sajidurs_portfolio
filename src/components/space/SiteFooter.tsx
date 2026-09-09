@@ -49,7 +49,7 @@ export function SiteFooter() {
                     <img
                       src={social.src}
                       alt=""
-                      className="block max-w-none"
+                      className="social-mark block max-w-none"
                       style={{ width: social.w, height: social.h }}
                     />
                   </Item>

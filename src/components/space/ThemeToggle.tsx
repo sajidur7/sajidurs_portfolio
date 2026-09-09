@@ -1,6 +1,6 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { type MouseEvent, useSyncExternalStore } from "react";
 import { playTone } from "@/lib/sound";
 
 /**
@@ -19,11 +19,57 @@ const STORAGE_KEY = "space:theme";
 
 type Theme = "light" | "dark";
 
-function apply(theme: Theme) {
+function commit(theme: Theme) {
+  document.documentElement.dataset.theme = theme;
+  try {
+    window.localStorage.setItem(STORAGE_KEY, theme);
+  } catch {
+    /* private mode — the choice still holds for this page view */
+  }
+}
+
+/**
+ * Swaps the theme behind a circle centred on the toggle: going dark, the new
+ * page grows out of the icon; going light, the old one collapses back into it.
+ *
+ * Needs the View Transitions API. Where that is missing — or motion is reduced
+ * — it falls back to the plain cross-fade class, so the swap still reads as a
+ * transition rather than a jump.
+ */
+function swap(theme: Theme, origin: { x: number; y: number }) {
   const root = document.documentElement;
-  root.classList.add("theme-switching");
-  root.dataset.theme = theme;
-  window.setTimeout(() => root.classList.remove("theme-switching"), 340);
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (reduced || !document.startViewTransition) {
+    root.classList.add("theme-switching");
+    commit(theme);
+    window.setTimeout(() => root.classList.remove("theme-switching"), 340);
+    return;
+  }
+
+  // Reach the furthest corner so the circle always clears the viewport.
+  const radius = Math.hypot(
+    Math.max(origin.x, window.innerWidth - origin.x),
+    Math.max(origin.y, window.innerHeight - origin.y),
+  );
+
+  // Handed to the keyframes, which is what lets the circle animate from the
+  // transition's first frame rather than being attached a few frames late.
+  root.style.setProperty("--vt-x", `${origin.x}px`);
+  root.style.setProperty("--vt-y", `${origin.y}px`);
+  root.style.setProperty("--vt-r", `${radius}px`);
+
+  const phase = theme === "light" ? "theme-collapsing" : "theme-expanding";
+  root.classList.add(phase);
+
+  const transition = document.startViewTransition(() => commit(theme));
+
+  transition.finished.finally(() => {
+    root.classList.remove(phase);
+    root.style.removeProperty("--vt-x");
+    root.style.removeProperty("--vt-y");
+    root.style.removeProperty("--vt-r");
+  });
 }
 
 /*
@@ -47,15 +93,13 @@ const readTheme = (): Theme =>
 export function ThemeToggle() {
   const theme = useSyncExternalStore(subscribe, readTheme, () => "light" as Theme);
 
-  const toggle = () => {
-    const next: Theme = theme === "dark" ? "light" : "dark";
-    apply(next);
-    try {
-      window.localStorage.setItem(STORAGE_KEY, next);
-    } catch {
-      /* private mode — the choice still holds for this page view */
-    }
+  const toggle = (event: MouseEvent<HTMLButtonElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
     playTone("nav");
+    swap(theme === "dark" ? "light" : "dark", {
+      x: rect.left + rect.width / 2,
+      y: rect.top + rect.height / 2,
+    });
   };
 
   const dark = theme === "dark";
