@@ -72,7 +72,7 @@ export function SpaceNav() {
           /* The colour lives on the item, not the label, so the masked glyph
              inherits it too — otherwise every mark picks up the body's ink and
              the pending items' icons look active. */
-          const shared = `flex h-[42px] shrink-0 items-center justify-center gap-[6px] rounded-full bg-canvas px-[11px] py-[10px] transition-transform duration-300 ease-[var(--ease-smooth)] sm:px-[15px] ${
+          const shared = `flex h-[42px] shrink-0 items-center justify-center gap-[6px] rounded-full bg-canvas px-[12px] py-[10px] transition-transform duration-300 ease-[var(--ease-smooth)] sm:px-[15px] ${
             live ? "text-ink" : "text-faint"
           }`;
 
