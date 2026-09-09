@@ -7,26 +7,30 @@ import { SectionHeading } from "./SectionHeading";
  * artwork sits inside its frame at different scales, so a single shared size
  * would distort several of them.
  *
- * The eleven logos total 352px and the frame's 31.8px gaps fill the remaining
- * 318px of the 670 column exactly, so `justify-between` reproduces the design
+ * The eleven logos total 309px and the frame's 36.1px gaps fill the remaining
+ * 361px of the 670 column exactly, so `justify-between` reproduces the design
  * at full width and redistributes on its own as the column narrows. Below that
  * they wrap onto a second row.
+ *
+ * The inner crops are the frame's percentages resolved against each new box —
+ * Figma states them as a share of the frame, so they have to be recomputed
+ * whenever the boxes change rather than scaled by eye.
  *
  * `label` is what the hover tooltip shows — product names rather than bare alt
  * text.
  */
 const STACK = [
-  { src: "/figma/stack-01.png", label: "Figma", box: { w: 24, h: 34 }, img: { w: 34, h: 34, x: -5, y: 0 } },
-  { src: "/figma/stack-02.png", label: "Framer", box: { w: 24, h: 34 }, img: { w: 34, h: 34, x: -5, y: 0 } },
-  { src: "/figma/stack-03.png", dark: "/figma/stack-03-dark.png", label: "Cursor", box: { w: 32, h: 34 }, img: { w: 36.614, h: 36.125, x: -2.307, y: -1.061 } },
-  { src: "/figma/stack-04.png", label: "VS Code", box: { w: 34, h: 34 } },
-  { src: "/figma/stack-05.png", label: "Claude", box: { w: 34, h: 34 }, img: { w: 36.428, h: 36.428, x: -1.214, y: -1.214 } },
-  { src: "/figma/stack-06.png", dark: "/figma/stack-06-dark.png", label: "ChatGPT", box: { w: 34, h: 34 } },
-  { src: "/figma/stack-07.png", label: "Jira", box: { w: 34, h: 34 } },
-  { src: "/figma/stack-08.png", dark: "/figma/stack-08-dark.png", label: "Notion", box: { w: 34, h: 34 } },
-  { src: "/figma/stack-09.png", label: "Slack", box: { w: 34, h: 34 } },
-  { src: "/figma/stack-10.png", dark: "/figma/stack-10-dark.png", label: "GitHub", box: { w: 34, h: 34 } },
-  { src: "/figma/stack-11.png", dark: "/figma/stack-11-dark.png", label: "Vercel", box: { w: 34, h: 34 } },
+  { src: "/figma/stack-01.png", label: "Figma", box: { w: 21, h: 30 }, img: { w: 29.75, h: 30, x: -4.375, y: 0 } },
+  { src: "/figma/stack-02.png", label: "Framer", box: { w: 21, h: 30 }, img: { w: 29.75, h: 30, x: -4.375, y: 0 } },
+  { src: "/figma/stack-03.png", dark: "/figma/stack-03-dark.png", label: "Cursor", box: { w: 27, h: 30 }, img: { w: 30.893, h: 31.875, x: -1.947, y: -0.936 } },
+  { src: "/figma/stack-04.png", label: "VS Code", box: { w: 30, h: 30 } },
+  { src: "/figma/stack-05.png", label: "Claude", box: { w: 30, h: 30 }, img: { w: 32.142, h: 32.142, x: -1.071, y: -1.071 } },
+  { src: "/figma/stack-06.png", dark: "/figma/stack-06-dark.png", label: "ChatGPT", box: { w: 30, h: 30 } },
+  { src: "/figma/stack-07.png", label: "Jira", box: { w: 30, h: 30 } },
+  { src: "/figma/stack-08.png", dark: "/figma/stack-08-dark.png", label: "Notion", box: { w: 30, h: 30 } },
+  { src: "/figma/stack-09.png", label: "Slack", box: { w: 30, h: 30 } },
+  { src: "/figma/stack-10.png", dark: "/figma/stack-10-dark.png", label: "GitHub", box: { w: 30, h: 30 } },
+  { src: "/figma/stack-11.png", dark: "/figma/stack-11-dark.png", label: "Vercel", box: { w: 30, h: 30 } },
 ];
 
 export function TechStack() {
