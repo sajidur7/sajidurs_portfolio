@@ -56,9 +56,10 @@ export function SiteFooter() {
       {/* Text only — the label carries it, so no brand mark. */}
       <MagneticButton href={WHATSAPP_URL} external label="Drop a Message" />
 
-      {/* Spans both columns on a phone, where the caption is hidden and column
-          two is only as wide as the accent dot. */}
-      <div className="col-span-2 flex w-full flex-wrap items-center justify-between gap-x-[41px] gap-y-[14px] sm:col-span-1">
+      {/* Stays in column two at every size, so on a phone — where the label is
+          hidden — the icons share the CTA's row, right-aligned and centred on
+          it, rather than dropping below. */}
+      <div className="flex w-full flex-wrap items-center justify-between gap-x-[41px] gap-y-[14px]">
         {/* Dropped on a phone — with the label gone the icons fall to the
             start of the row, lining up under the CTA. */}
         <p className="text-trim hidden whitespace-nowrap font-body text-[14px] leading-normal text-ink sm:block">
