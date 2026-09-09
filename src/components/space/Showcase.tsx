@@ -32,7 +32,7 @@ const SWIPE_THRESHOLD = 50;
   quicker than opening, which was enough to stop the two reading as the same
   gesture.
 */
-const FLIP_MS = 520;
+const FLIP_MS = 560;
 
 /* The caption bar's two repeated pieces. Both inherit the bar's colour, so the
    theme swap is one property on the container rather than eleven. */
@@ -110,7 +110,7 @@ export function Showcase() {
     if (el && from && !still) {
       const to = el.getBoundingClientRect();
       el.style.willChange = "transform";
-      el.style.transition = `transform ${FLIP_MS}ms var(--ease-smooth)`;
+      el.style.transition = `transform ${FLIP_MS}ms var(--ease-flip)`;
       el.style.transform = `translate3d(${from.left + from.width / 2 - (to.left + to.width / 2)}px, ${
         from.top + from.height / 2 - (to.top + to.height / 2)
       }px, 0) scale(${from.width / to.width})`;
@@ -166,7 +166,7 @@ export function Showcase() {
 
     void el.getBoundingClientRect();
 
-    el.style.transition = `transform ${FLIP_MS}ms var(--ease-smooth)`;
+    el.style.transition = `transform ${FLIP_MS}ms var(--ease-flip)`;
     el.style.transform = "translate3d(0, 0, 0)";
 
     const settle = window.setTimeout(() => {
@@ -218,8 +218,16 @@ export function Showcase() {
   // when it is open — but never while someone is typing. Escape closes.
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      const target = event.target as HTMLElement | null;
-      if (target?.closest("input, textarea, select, [contenteditable='true']")) return;
+      /* Element check before closest(): a key event can be targeted at the
+         document or the window, and calling closest() on either throws — which
+         would take the Escape handling below down with it. */
+      const target = event.target;
+      if (
+        target instanceof Element &&
+        target.closest("input, textarea, select, [contenteditable='true']")
+      ) {
+        return;
+      }
 
       if (event.key === "Escape" && expanded !== null) {
         close();
@@ -229,18 +237,24 @@ export function Showcase() {
       if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
       event.preventDefault();
 
-      const step = event.key === "ArrowRight" ? 1 : -1;
+      const delta = event.key === "ArrowRight" ? 1 : -1;
       if (expanded !== null) {
-        setExpanded((current) => ((current ?? 0) + step + SLIDES.length) % SLIDES.length);
-        fromRect.current = null;
+        /*
+          Through step(), like the caption's arrows and the phone's tap zones.
+          This used to move `expanded` on its own and drop the captured rect,
+          which left the carousel behind sitting on a different slide — so
+          closing sent the work flying off to wherever that slide had been
+          parked rather than back to the card in view.
+        */
+        step(delta);
       } else {
-        setIndex((current) => (current + step + SLIDES.length) % SLIDES.length);
+        setIndex((current) => (current + delta + SLIDES.length) % SLIDES.length);
       }
     };
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [expanded, close]);
+  }, [expanded, close, step]);
 
   return (
     <section id="work" className="scroll-mt-[30px]">
@@ -372,7 +386,7 @@ export function Showcase() {
             panel uses, and it does not follow the theme: an expanded work wants
             a dark ground to sit on either way.
           */
-          className="fixed inset-0 z-[200] flex cursor-zoom-out flex-col items-center justify-center bg-[var(--scrim-modal)] p-[20px] opacity-0 transition-opacity duration-[520ms] ease-[var(--ease-smooth)] data-[open=true]:opacity-100 sm:p-[40px]"
+          className="fixed inset-0 z-[200] flex cursor-zoom-out flex-col items-center justify-center bg-[var(--scrim-modal)] p-[20px] opacity-0 transition-opacity duration-[560ms] ease-[var(--ease-flip)] data-[open=true]:opacity-100 sm:p-[40px]"
         >
           {/* The wrapper shrink-wraps the image and carries the FLIP, so the
               tap zones travel with it instead of sitting still while it
@@ -450,7 +464,7 @@ export function Showcase() {
           */}
           <div
             onClick={(event) => event.stopPropagation()}
-            className="mt-[12px] flex shrink-0 cursor-default items-center justify-center gap-[6px] rounded-full py-[4px] pl-[8px] pr-[4px] sm:pr-[8px]"
+            className="mt-[16px] flex shrink-0 cursor-default items-center justify-center gap-[6px] rounded-full py-[4px] pl-[8px] pr-[4px] sm:pr-[8px]"
             style={{ background: "var(--caption-ground)", color: "var(--caption-ink)" }}
           >
             <p className={CAPTION_TEXT}>{CAPTION_NAME}</p>

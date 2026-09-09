@@ -32,6 +32,20 @@ const CAL_LINK = "sajidur-rahman-n6b6ry/30min";
 const CAL_NAMESPACE = "booking";
 const EXIT_MS = 380;
 
+/*
+  The one thing the embed does not make transparent on its own. `cal-bg` is the
+  booker's page ground, and it paints an opaque slab out to the edges of the
+  frame — white on the light theme, near-black on the dark one. Either way it
+  shows against our own backdrop.
+
+  Only this variable: `cal-bg-emphasis` and the rest still give the date cells
+  and the time slots their fills.
+*/
+const CAL_TRANSPARENT_GROUND = {
+  light: { "cal-bg": "transparent" },
+  dark: { "cal-bg": "transparent" },
+};
+
 type CalApi = ((...args: unknown[]) => void) & {
   loaded?: boolean;
   ns?: Record<string, (...args: unknown[]) => void>;
@@ -144,23 +158,30 @@ export function BookingProvider({ children }: { children: ReactNode }) {
       layout: "month_view",
       theme,
       hideEventTypeDetails: false,
-      /*
-        The one thing the embed does not make transparent on its own. `cal-bg`
-        is the booker's page ground — white in both themes — and it was showing
-        as a slab around the card wherever our own backdrop was darker than it.
-        Only this variable: `cal-bg-emphasis` and the rest still give the date
-        cells and time slots their fills.
-      */
-      cssVarsPerTheme: {
-        light: { "cal-bg": "transparent" },
-        dark: { "cal-bg": "transparent" },
-      },
+      cssVarsPerTheme: CAL_TRANSPARENT_GROUND,
     });
 
     Cal.ns![CAL_NAMESPACE]("inline", {
       elementOrSelector: mount,
       calLink: CAL_LINK,
       config: { layout: "month_view", theme },
+    });
+
+    /*
+      And once more when the booker says it is ready.
+
+      Layout and theme survive the trip because Cal folds them into the iframe
+      URL — you can read them back off the src. `cssVarsPerTheme` cannot go in
+      a URL, so it is delivered to the frame as a message, and a message sent
+      before the frame exists lands nowhere. Registering it up front is what
+      keeps the theme right on a reopen; re-sending it here is what actually
+      makes the ground transparent.
+    */
+    Cal.ns![CAL_NAMESPACE]("on", {
+      action: "linkReady",
+      callback: () => {
+        Cal.ns![CAL_NAMESPACE]("ui", { cssVarsPerTheme: CAL_TRANSPARENT_GROUND });
+      },
     });
   }, [open]);
 

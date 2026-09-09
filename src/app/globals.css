@@ -24,6 +24,13 @@
 
   /* One easing for everything, so the whole page decelerates the same way. */
   --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+  /*
+    Except the expand. --ease-smooth leaves almost instantly and spends the
+    rest of its time arriving, which suits a small element travelling a short
+    way; on something that fills the screen it reads as a lurch. This one
+    gathers pace before it settles.
+  */
+  --ease-flip: cubic-bezier(0.32, 0.72, 0, 1);
 
 
   --animate-blip: blip 2s cubic-bezier(0, 0, 0.2, 1) infinite;
@@ -481,10 +488,15 @@ html[data-theme="dark"] .logo-dark {
   display: block;
 }
 
+/*
+  No border-radius here. It was 999px, which is right for the pills and very
+  wrong for everything else: an outline follows its element's radius, so a
+  focused work in the carousel was ringed by a huge red circle. Each element
+  already carries the radius it wants.
+*/
 :focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 3px;
-  border-radius: 999px;
 }
 
 /*
