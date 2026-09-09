@@ -90,12 +90,15 @@ html[data-theme="dark"] {
   /* Accent is the brand and stays put across themes. */
 
   --scrim: rgba(0, 0, 0, 0.55);
+  --scrim-modal: rgba(11, 11, 11, 0.7);
 }
 
 :root {
-  /* The bottom fade's tint, so it can invert with the theme. The modal
-     backdrops do not use it — those are a flat ink wash in both themes. */
+  /* The bottom fade's tint, so it can invert with the theme. */
   --scrim: rgba(35, 35, 35, 0.1);
+  /* What sits behind an expanded work or the booking panel: the canvas colour
+     at 70%, so the page reads through it rather than being blacked out. */
+  --scrim-modal: rgba(242, 242, 242, 0.7);
 }
 
 html {

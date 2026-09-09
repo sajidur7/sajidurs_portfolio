@@ -163,8 +163,8 @@ export function BookingProvider({ children }: { children: ReactNode }) {
           aria-label="Book a 30 minute call"
           onClick={closePanel}
           data-open={!closing}
-          /* Flat 60% ink, matching the expanded-work backdrop. */
-          className="fixed inset-0 z-[200] flex cursor-zoom-out items-center justify-center bg-[#232323]/60 p-[16px] opacity-0 transition-opacity duration-[380ms] ease-[var(--ease-smooth)] data-[open=true]:opacity-100 sm:p-[40px]"
+          /* Canvas at 70%, matching the expanded-work backdrop. */
+          className="fixed inset-0 z-[200] flex cursor-zoom-out items-center justify-center bg-[var(--scrim-modal)] p-[16px] opacity-0 transition-opacity duration-[380ms] ease-[var(--ease-smooth)] data-[open=true]:opacity-100 sm:p-[40px]"
         >
           {/*
             No background, border or shadow here: the embed brings its own card

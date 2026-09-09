@@ -147,8 +147,12 @@ export function Hero() {
         </span>
 
         <span className="flex items-center gap-[6px]">
-          {/* On a phone the pulsing dot carries the meaning on its own. */}
-          <span className="text-trim hidden whitespace-nowrap font-body text-[14px] leading-normal text-ink sm:inline">
+          {/* On a phone the pulsing dot carries the meaning on its own.
+
+              `faint` rather than a literal #c0c0c0: that is what the token
+              already resolves to in light, and it keeps the label legible when
+              the theme flips instead of leaving it near-invisible on black. */}
+          <span className="text-trim hidden whitespace-nowrap font-body text-[14px] leading-normal text-faint sm:inline">
             Open to Work
           </span>
           <StatusDot />

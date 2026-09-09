@@ -16,11 +16,11 @@ import { CURSOR_TOAST, cursorToast, playTone } from "@/lib/sound";
  * feel weighted rather than glued to the mouse.
  *
  * The fraction of the remaining distance closed each frame. At 1 the arrow is
- * welded to the pointer and the weight is gone entirely; 0.65 keeps a trace of
- * lag — roughly three frames to close a gap, about 50ms — which reads as
- * responsive rather than heavy.
+ * welded to the pointer and the weight is gone entirely; 0.8 leaves just
+ * enough lag to see — two frames, about 30ms — so the arrow still trails
+ * rather than snapping.
  */
-const EASE = 0.65;
+const EASE = 0.8;
 const TICKS = 8;
 const EMAIL = "incognitoshimul@gmail.com";
 const TOAST_MS = 1800;

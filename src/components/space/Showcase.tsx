@@ -359,11 +359,11 @@ export function Showcase() {
           onClick={close}
           data-open={!closing}
           /*
-            A flat 60% ink wash rather than a blur: the same backdrop the
-            booking panel uses, and it does not invert with the theme — the
-            expanded work should read against one constant ground.
+            A wash of the canvas colour at 70% rather than a blur — the same
+            backdrop the booking panel uses, and it follows the theme, so the
+            work is never floating on the wrong ground.
           */
-          className="fixed inset-0 z-[200] flex cursor-zoom-out items-center justify-center bg-[#232323]/60 p-[20px] opacity-0 transition-opacity duration-[520ms] ease-[var(--ease-smooth)] data-[open=true]:opacity-100 sm:p-[40px]"
+          className="fixed inset-0 z-[200] flex cursor-zoom-out items-center justify-center bg-[var(--scrim-modal)] p-[20px] opacity-0 transition-opacity duration-[520ms] ease-[var(--ease-smooth)] data-[open=true]:opacity-100 sm:p-[40px]"
         >
           {/* The wrapper shrink-wraps the image and carries the FLIP, so the
               tap zones travel with it instead of sitting still while it

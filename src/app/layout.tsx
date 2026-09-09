@@ -26,6 +26,16 @@ const duplet = localFont({
 });
 
 export const metadata: Metadata = {
+  /*
+    Social previews need absolute URLs. Without this Next has no origin to
+    resolve opengraph-image.png against, and the card silently ships a relative
+    path that no crawler can fetch.
+  */
+  metadataBase: new URL("https://sajidur.space"),
+  /* The preview image is the square portrait, so this is a summary card. Left
+     at the default `summary_large_image` the platforms expect a 1.91:1 banner
+     and letterbox the photo into it. */
+  twitter: { card: "summary" },
   title: "Sajidur Rahman — Product & Experience Designer",
   description:
     "Product designer at TechSfera, based in Bangladesh. Taking complicated problems, finding what really matters, and turning them into simple and clear experiences.",
