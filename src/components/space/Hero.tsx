@@ -7,9 +7,10 @@ import { StatusDot } from "./StatusDot";
  * Figma nodes 7:299 (avatar), 7:215 (name), 7:219 (bio), 7:218 + 7:294 (links),
  * 7:221 (buttons) and 7:228 (availability).
  *
- * The avatar is two layers clipped to the same 70×70 circle — Figma expresses
- * that as a pair of mask groups; the offsets below are those masks resolved
- * against a plain `overflow-hidden rounded-full` box.
+ * The avatar is one square photo clipped to a 70×70 circle. It used to be two
+ * layers — a portrait over a separate ring — because the frame's artwork came
+ * that way; the supplied photo carries its own background, so the ring and the
+ * mask offsets that positioned it are gone.
  *
  * The hero staggers in on load rather than on scroll: everything here is above
  * the fold, so the reveals fire immediately, 60ms apart.
@@ -30,20 +31,11 @@ export function Hero() {
         className="mt-[60px] size-[70px] overflow-hidden rounded-full transition-transform duration-500 ease-[var(--ease-smooth)] hover:scale-[1.06]"
         delay={60}
       >
-        <span className="relative block size-full">
-          <img
-            src="/figma/avatar-ring.png"
-            alt=""
-            className="absolute left-[-27px] top-[-3px] block h-[100px] w-[133px] max-w-none object-cover"
-          />
-          <span className="absolute left-[-14.875px] top-[-9.375px] block size-[98.875px] overflow-hidden rounded-full">
-            <img
-              src="/figma/avatar-photo.png"
-              alt="Sajidur Rahman"
-              className="absolute left-0 top-[10.76%] size-full max-w-none"
-            />
-          </span>
-        </span>
+        <img
+          src="/figma/p.png"
+          alt="Sajidur Rahman"
+          className="block size-full object-cover"
+        />
       </Reveal>
 
       <Reveal className="mt-[24px] flex flex-col items-start gap-[21px] text-ink" delay={120}>

@@ -100,10 +100,11 @@ export function Showcase() {
 
     if (el && from && !still) {
       const to = el.getBoundingClientRect();
+      el.style.willChange = "transform";
       el.style.transition = `transform ${FLIP_MS}ms var(--ease-smooth)`;
-      el.style.transform = `translate(${from.left + from.width / 2 - (to.left + to.width / 2)}px, ${
+      el.style.transform = `translate3d(${from.left + from.width / 2 - (to.left + to.width / 2)}px, ${
         from.top + from.height / 2 - (to.top + to.height / 2)
-      }px) scale(${from.width / to.width})`;
+      }px, 0) scale(${from.width / to.width})`;
     }
 
     setClosing(true);
@@ -137,15 +138,33 @@ export function Showcase() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const to = el.getBoundingClientRect();
+
+    /*
+      The works are 2680x2160 — roughly 23MB of bitmap once decoded. Animating
+      a transform on something that size is only smooth if the browser
+      rasterises it once and then moves the texture, so the element is promoted
+      to its own layer for the duration: `will-change` up front, and a 3D
+      transform so the promotion actually happens.
+
+      The hint comes off once the motion is over. Left on, it pins that 23MB
+      layer in memory for as long as the work stays open.
+    */
+    el.style.willChange = "transform";
     el.style.transition = "none";
-    el.style.transform = `translate(${from.left + from.width / 2 - (to.left + to.width / 2)}px, ${
+    el.style.transform = `translate3d(${from.left + from.width / 2 - (to.left + to.width / 2)}px, ${
       from.top + from.height / 2 - (to.top + to.height / 2)
-    }px) scale(${from.width / to.width})`;
+    }px, 0) scale(${from.width / to.width})`;
 
     void el.getBoundingClientRect();
 
     el.style.transition = `transform ${FLIP_MS}ms var(--ease-smooth)`;
-    el.style.transform = "none";
+    el.style.transform = "translate3d(0, 0, 0)";
+
+    const settle = window.setTimeout(() => {
+      el.style.willChange = "";
+    }, FLIP_MS + 60);
+
+    return () => window.clearTimeout(settle);
   }, [expanded, closing]);
 
   /*
@@ -358,6 +377,15 @@ export function Showcase() {
               src={SLIDES[expanded].src}
               alt={SLIDES[expanded].label}
               draggable={false}
+              /*
+                The carousel already holds this exact file, but a fresh element
+                decodes it again — and asynchronously, which is the blank frame
+                at the start of the expand. `sync` makes the browser finish the
+                decode before it paints, so the work is there on the first
+                frame instead of arriving partway through the motion.
+              */
+              decoding="sync"
+              fetchPriority="high"
               /*
                 Capped below the viewport so the work sits in some breathing
                 room rather than filling the screen edge to edge.
