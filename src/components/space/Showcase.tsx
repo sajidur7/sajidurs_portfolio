@@ -1,6 +1,7 @@
 "use client";
 
 /* eslint-disable @next/next/no-img-element */
+import type { CSSProperties } from "react";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Reveal } from "./Reveal";
 
@@ -32,6 +33,14 @@ const SWIPE_THRESHOLD = 50;
   gesture.
 */
 const FLIP_MS = 520;
+
+/* The caption bar's two repeated pieces. Both inherit the bar's colour, so the
+   theme swap is one property on the container rather than eleven. */
+/* What the bar calls the set. One word for all five, as the frame shows it —
+   swap it for a per-slide field the day the works get their own names. */
+const CAPTION_NAME = "Proto";
+const CAPTION_TEXT = "text-trim whitespace-nowrap font-body text-[13px] leading-[22px]";
+const CAPTION_DOT = "block size-[2px] shrink-0 rounded-full bg-current";
 /** Long enough to actually look at a piece, short enough that it keeps moving. */
 const AUTOPLAY_MS = 3000;
 
@@ -359,11 +368,11 @@ export function Showcase() {
           onClick={close}
           data-open={!closing}
           /*
-            A wash of the canvas colour at 70% rather than a blur — the same
-            backdrop the booking panel uses, and it follows the theme, so the
-            work is never floating on the wrong ground.
+            A dark wash rather than a blur — the same backdrop the booking
+            panel uses, and it does not follow the theme: an expanded work wants
+            a dark ground to sit on either way.
           */
-          className="fixed inset-0 z-[200] flex cursor-zoom-out items-center justify-center bg-[var(--scrim-modal)] p-[20px] opacity-0 transition-opacity duration-[520ms] ease-[var(--ease-smooth)] data-[open=true]:opacity-100 sm:p-[40px]"
+          className="fixed inset-0 z-[200] flex cursor-zoom-out flex-col items-center justify-center bg-[var(--scrim-modal)] p-[20px] opacity-0 transition-opacity duration-[520ms] ease-[var(--ease-smooth)] data-[open=true]:opacity-100 sm:p-[40px]"
         >
           {/* The wrapper shrink-wraps the image and carries the FLIP, so the
               tap zones travel with it instead of sitting still while it
@@ -427,6 +436,69 @@ export function Showcase() {
               }}
               className="absolute inset-y-0 right-0 w-1/4 sm:hidden"
             />
+          </div>
+
+          {/*
+            Figma nodes 38:715 / 38:773 for the desktop bar, 38:829 / 38:813
+            for the phone one — which drops "esc to close" and the divider
+            before it, since a phone has no escape key, and tightens the right
+            padding to 4 because the arrows end the row there.
+
+            A sibling of the image rather than a child: the wrapper carries the
+            FLIP, and anything inside it would be scaled along with the work on
+            the way in.
+          */}
+          <div
+            onClick={(event) => event.stopPropagation()}
+            className="mt-[12px] flex shrink-0 cursor-default items-center justify-center gap-[6px] rounded-full py-[4px] pl-[8px] pr-[4px] sm:pr-[8px]"
+            style={{ background: "var(--caption-ground)", color: "var(--caption-ink)" }}
+          >
+            <p className={CAPTION_TEXT}>{CAPTION_NAME}</p>
+            <span className={CAPTION_DOT} />
+            <p className={CAPTION_TEXT}>
+              {expanded + 1} of {SLIDES.length}
+            </p>
+
+            <span className="flex items-center gap-[4px]">
+              <span className={CAPTION_DOT} />
+              <span className="flex items-center gap-[2px]">
+                {([
+                  ["Previous work", -1, "/figma/icon-chevron-left.svg"],
+                  ["Next work", 1, "/figma/icon-chevron-right.svg"],
+                ] as const).map(([label, delta, glyph]) => (
+                  <button
+                    key={label}
+                    type="button"
+                    aria-label={label}
+                    onClick={() => step(delta)}
+                    className="group flex size-[14px] shrink-0 items-center justify-center"
+                  >
+                    {/*
+                      Masked rather than drawn, so the chevron takes the bar's
+                      own colour instead of the accent the file is stroked in.
+
+                      4.48 x 7.98 because the exported artwork carries 0.7 of
+                      padding for its own stroke: the glyph inside it lands at
+                      the frame's 3.5 x 7, and the 1.4 stroke scales to the
+                      0.98 the smaller icon draws.
+                    */}
+                    <span
+                      className="nav-glyph transition-transform duration-300 ease-[var(--ease-smooth)] group-active:scale-90"
+                      style={
+                        {
+                          width: 4.48,
+                          height: 7.98,
+                          "--glyph": `url(${glyph})`,
+                        } as CSSProperties
+                      }
+                    />
+                  </button>
+                ))}
+              </span>
+              <span className={`${CAPTION_DOT} hidden sm:block`} />
+            </span>
+
+            <p className={`${CAPTION_TEXT} hidden sm:block`}>esc to close</p>
           </div>
         </div>
       )}

@@ -122,16 +122,45 @@ export function BookingProvider({ children }: { children: ReactNode }) {
     loadCal();
     const Cal = window.Cal!;
 
+    /*
+      Always dark, and not a bug: the backdrop behind this is a dark wash in
+      both themes, so the booker is on a dark ground either way. Following the
+      site theme here would put a light booker on that dark wash.
+    */
+    const theme = "dark";
+
     Cal("init", CAL_NAMESPACE, { origin: "https://app.cal.com" });
+    /*
+      `ui` before `inline`, which is the reverse of Cal's published snippet.
+
+      On the first open it makes no difference — the embed script has not
+      loaded, so both calls sit in a queue and are applied together. On a
+      reopen the script is already there, `inline` builds the iframe
+      synchronously, and a `ui` sent afterwards arrives as a message the
+      booker may already have rendered past: the transparent ground was lost
+      and the white slab came back, but only from the second open onward.
+    */
+    Cal.ns![CAL_NAMESPACE]("ui", {
+      layout: "month_view",
+      theme,
+      hideEventTypeDetails: false,
+      /*
+        The one thing the embed does not make transparent on its own. `cal-bg`
+        is the booker's page ground — white in both themes — and it was showing
+        as a slab around the card wherever our own backdrop was darker than it.
+        Only this variable: `cal-bg-emphasis` and the rest still give the date
+        cells and time slots their fills.
+      */
+      cssVarsPerTheme: {
+        light: { "cal-bg": "transparent" },
+        dark: { "cal-bg": "transparent" },
+      },
+    });
+
     Cal.ns![CAL_NAMESPACE]("inline", {
       elementOrSelector: mount,
       calLink: CAL_LINK,
-      config: { layout: "month_view", theme: "dark" },
-    });
-    Cal.ns![CAL_NAMESPACE]("ui", {
-      layout: "month_view",
-      theme: "dark",
-      hideEventTypeDetails: false,
+      config: { layout: "month_view", theme },
     });
   }, [open]);
 
@@ -163,7 +192,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
           aria-label="Book a 30 minute call"
           onClick={closePanel}
           data-open={!closing}
-          /* Canvas at 70%, matching the expanded-work backdrop. */
+          /* The shared modal wash, matching the expanded-work backdrop. */
           className="fixed inset-0 z-[200] flex cursor-zoom-out items-center justify-center bg-[var(--scrim-modal)] p-[16px] opacity-0 transition-opacity duration-[380ms] ease-[var(--ease-smooth)] data-[open=true]:opacity-100 sm:p-[40px]"
         >
           {/*
