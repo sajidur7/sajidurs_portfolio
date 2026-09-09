@@ -26,7 +26,12 @@ const SLIDES = [
 ];
 
 const SWIPE_THRESHOLD = 50;
-const EXIT_MS = 420;
+/*
+  One duration for both directions of the expand. Closing used to run 100ms
+  quicker than opening, which was enough to stop the two reading as the same
+  gesture.
+*/
+const FLIP_MS = 520;
 /** Long enough to actually look at a piece, short enough that it keeps moving. */
 const AUTOPLAY_MS = 3000;
 
@@ -55,12 +60,24 @@ export function Showcase() {
 
   const close = useCallback(() => {
     const el = bigRef.current;
-    const from = fromRect.current;
 
-    // Run the opening transform in reverse, then unmount once it lands.
+    /*
+      Measure the thumbnail again instead of reusing the rect captured on the
+      way in. The page can scroll while a work is open, and a stale rect sends
+      the image home to where the card used to be.
+    */
+    const live = expanded === null ? null : slideRefs.current[expanded];
+    const from = live?.getBoundingClientRect() ?? fromRect.current;
+
+    /*
+      The same journey as the open, run backwards — same duration, and the
+      easing mirrored rather than repeated. Reusing the opening ease-out here
+      would fling the image away and then creep it into the card, which is
+      what made the close feel like a different animation from the expand.
+    */
     if (el && from) {
       const to = el.getBoundingClientRect();
-      el.style.transition = `transform ${EXIT_MS}ms var(--ease-smooth)`;
+      el.style.transition = `transform ${FLIP_MS}ms var(--ease-smooth-in)`;
       el.style.transform = `translate(${from.left + from.width / 2 - (to.left + to.width / 2)}px, ${
         from.top + from.height / 2 - (to.top + to.height / 2)
       }px) scale(${from.width / to.width})`;
@@ -70,8 +87,8 @@ export function Showcase() {
     window.setTimeout(() => {
       setExpanded(null);
       setClosing(false);
-    }, EXIT_MS);
-  }, []);
+    }, FLIP_MS);
+  }, [expanded]);
 
   /* FLIP: start the big image exactly where the card thumbnail is, then let it
      travel to its natural place. Both share an aspect ratio, so one uniform
@@ -92,7 +109,7 @@ export function Showcase() {
 
     void el.getBoundingClientRect();
 
-    el.style.transition = "transform 520ms var(--ease-smooth)";
+    el.style.transition = `transform ${FLIP_MS}ms var(--ease-smooth)`;
     el.style.transform = "none";
   }, [expanded, closing]);
 
@@ -288,12 +305,11 @@ export function Showcase() {
           onClick={close}
           data-open={!closing}
           /*
-            Backdrop per screen 3: the page behind is softened, not dimmed.
-            Measured off the design's own render — a ~3.7px blur on the card's
-            straight edge, and a tint that only reaches ~9% black at the foot of
-            the screen rather than a heavy modal scrim.
+            A flat 50% ink wash rather than a blur: the same backdrop the
+            booking panel uses, and it does not invert with the theme — the
+            expanded work should read against one constant ground.
           */
-          className="fixed inset-0 z-[200] flex cursor-zoom-out items-center justify-center bg-[linear-gradient(to_bottom,transparent,var(--scrim-soft))] p-[20px] opacity-0 backdrop-blur-[4px] transition-opacity duration-[420ms] ease-[var(--ease-smooth)] data-[open=true]:opacity-100 sm:p-[40px]"
+          className="fixed inset-0 z-[200] flex cursor-zoom-out items-center justify-center bg-[#232323]/50 p-[20px] opacity-0 transition-opacity duration-[520ms] ease-[var(--ease-smooth-in)] data-[open=true]:opacity-100 data-[open=true]:ease-[var(--ease-smooth)] sm:p-[40px]"
         >
           <img
             ref={bigRef}

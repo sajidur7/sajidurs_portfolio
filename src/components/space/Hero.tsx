@@ -151,7 +151,7 @@ export function Hero() {
           />
           {/* Same answer the nav's Portfolio gives, from the same helper —
              the two should never disagree about whether the page exists. */}
-          <MagneticButton soon="Portfolio" label="Portfolio" variant="outline" />
+          <MagneticButton soon="Portfolio" label="See Portfolio" variant="outline" />
         </span>
 
         <span className="flex items-center gap-[6px]">

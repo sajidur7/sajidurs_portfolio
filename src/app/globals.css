@@ -12,7 +12,7 @@
   --color-ink: #232323;
   --color-muted: #8d8d8d;
   --color-faint: #c0c0c0;
-  --color-accent: #cd1632;
+  --color-accent: #f84620;
   /* Sits on the accent flood, so it stays light in both themes. */
   --color-on-accent: #f2f2f2;
   --color-edge: #eeeeee;
@@ -24,6 +24,9 @@
 
   /* One easing for everything, so the whole page decelerates the same way. */
   --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Its exact mirror — control points reflected through (0.5, 0.5) — for a
+     motion that has to read as the same motion played backwards. */
+  --ease-smooth-in: cubic-bezier(0.7, 0, 0.84, 0);
 
 
   --animate-blip: blip 2s cubic-bezier(0, 0, 0.2, 1) infinite;
@@ -90,13 +93,12 @@ html[data-theme="dark"] {
   /* Accent is the brand and stays put across themes. */
 
   --scrim: rgba(0, 0, 0, 0.55);
-  --scrim-soft: rgba(0, 0, 0, 0.5);
 }
 
 :root {
-  /* Bottom fade and modal backdrops, so they can invert with the theme. */
+  /* The bottom fade's tint, so it can invert with the theme. The modal
+     backdrops do not use it — those are a flat ink wash in both themes. */
   --scrim: rgba(35, 35, 35, 0.1);
-  --scrim-soft: rgba(35, 35, 35, 0.09);
 }
 
 html {
@@ -210,6 +212,55 @@ body {
 }
 
 /*
+  Node 7:212 — the full-bleed haze at the foot of the window. The mask ramps
+  the blur and the tint in from nothing at the top edge to full strength at the
+  bottom, so content resolves out of the haze as it scrolls up rather than
+  crossing a hard line.
+
+  Its height is the nav's clearance twice over plus the nav itself — 30 + 50 +
+  30 on a desktop, 20 + 50 + 20 on a phone — so the pill sits centred in the
+  haze with equal air above and below. Change the nav's height and this has to
+  follow, or the top gap drifts.
+
+  Every mask longhand is spelled out rather than left to `mask-image` alone. A
+  gradient carries no intrinsic size, and engines do not agree on what
+  `mask-size: auto` means for one: WebKit can resolve it against the 300×150
+  default object size instead of the element's own box, which crops the mask —
+  and with it the backdrop blur it is gating — to a fraction of the width. That
+  is invisible in Chromium and very visible on an iPhone. Pinning size, repeat
+  and position leaves nothing to interpret.
+
+  `inset-x` rather than a width, for the same reason: it derives from the box
+  instead of asking for a percentage of something.
+*/
+.bottom-scrim {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  height: 90px;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent, var(--scrim));
+  -webkit-backdrop-filter: blur(3.5px);
+  backdrop-filter: blur(3.5px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 70%);
+  -webkit-mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: 0 0;
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 70%);
+  mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  mask-position: 0 0;
+}
+
+@media (min-width: 640px) {
+  .bottom-scrim {
+    height: 110px;
+  }
+}
+
+/*
   Confirmation for the "C" shortcut and the coming-soon replies.
 
   Two elements, because the anchor and the pill need separate transforms: the
@@ -248,7 +299,7 @@ body {
   font-size: 14px;
   line-height: 22px;
   text-box: trim-both cap alphabetic;
-  box-shadow: 0 6px 16px -6px rgba(205, 22, 50, 0.6);
+  box-shadow: 0 6px 16px -6px rgba(248, 70, 32, 0.6);
   opacity: 0;
   transform: translateY(4px) scale(0.96);
   transform-origin: 0 50%;

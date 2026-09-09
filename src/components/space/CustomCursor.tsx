@@ -15,7 +15,7 @@ import { CURSOR_TOAST, cursorToast, playTone } from "@/lib/sound";
  * The dot chases the real pointer with a light lerp, which is what makes it
  * feel weighted rather than glued to the mouse.
  */
-const EASE = 0.24;
+const EASE = 0.4;
 const TICKS = 8;
 const EMAIL = "incognitoshimul@gmail.com";
 const TOAST_MS = 1800;
