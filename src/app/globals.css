@@ -25,19 +25,6 @@
   /* One easing for everything, so the whole page decelerates the same way. */
   --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
 
-  /*
-   * The theme wipe needs its own curve, close to linear.
-   *
-   * What the eye follows here is the circle's edge crossing the screen, and a
-   * constant edge speed means a constant radius — so anything front-loaded
-   * makes the sweep look instant. --ease-smooth (expo) was reaching 92% of the
-   * radius in the first third. This only eases the very start and end.
-   *
-   * The origin is a top corner, so the radius has to cover the full diagonal;
-   * that needs real duration or the circle is already off-screen before it
-   * reads as having grown out of the icon.
-   */
-  --ease-wipe: cubic-bezier(0.35, 0.02, 0.3, 1);
 
   --animate-blip: blip 2s cubic-bezier(0, 0, 0.2, 1) infinite;
   --animate-fade-in: fade-in 0.9s var(--ease-smooth) both;
@@ -323,61 +310,6 @@ html[data-theme="dark"] .logo-light {
 
 html[data-theme="dark"] .logo-dark {
   display: block;
-}
-
-/*
- * Theme swap: the new page is revealed by a circle growing out of the toggle,
- * and going the other way the old page collapses back into it. Same shape and
- * timing as the buttons' ink flood, which is where the idea comes from.
- *
- * The keyframes read the origin from custom properties the toggle sets before
- * starting the transition. That matters: driving this from script after
- * `ready` resolves leaves a few frames where the swap has already happened and
- * the circle then plays over an already-changed page, which reads as fake.
- * As CSS it runs on the transition's very first frame.
- */
-@keyframes theme-open {
-  from {
-    clip-path: circle(0px at var(--vt-x) var(--vt-y));
-  }
-  to {
-    clip-path: circle(var(--vt-r) at var(--vt-x) var(--vt-y));
-  }
-}
-
-@keyframes theme-close {
-  from {
-    clip-path: circle(var(--vt-r) at var(--vt-x) var(--vt-y));
-  }
-  to {
-    clip-path: circle(0px at var(--vt-x) var(--vt-y));
-  }
-}
-
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none;
-  mix-blend-mode: normal;
-}
-
-/* Going dark: the incoming page opens out of the icon. */
-html.theme-expanding::view-transition-old(root) {
-  z-index: 1;
-}
-
-html.theme-expanding::view-transition-new(root) {
-  z-index: 2;
-  animation: theme-open 900ms var(--ease-wipe) forwards;
-}
-
-/* Going light: the outgoing page closes back into it. */
-html.theme-collapsing::view-transition-new(root) {
-  z-index: 1;
-}
-
-html.theme-collapsing::view-transition-old(root) {
-  z-index: 2;
-  animation: theme-close 900ms var(--ease-wipe) forwards;
 }
 
 :focus-visible {

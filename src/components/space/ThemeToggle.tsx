@@ -1,6 +1,6 @@
 "use client";
 
-import { type MouseEvent, useSyncExternalStore } from "react";
+import { useSyncExternalStore } from "react";
 import { playTone } from "@/lib/sound";
 
 /**
@@ -29,47 +29,17 @@ function commit(theme: Theme) {
 }
 
 /**
- * Swaps the theme behind a circle centred on the toggle: going dark, the new
- * page grows out of the icon; going light, the old one collapses back into it.
- *
- * Needs the View Transitions API. Where that is missing — or motion is reduced
- * — it falls back to the plain cross-fade class, so the swap still reads as a
- * transition rather than a jump.
+ * Swaps the theme behind a short cross-fade of the colours themselves — no
+ * wipe, no reveal. The class is only present while the fade runs, because as a
+ * standing rule it would outrank the Tailwind transition utilities on every
+ * hover state and quietly replace them.
  */
-function swap(theme: Theme, origin: { x: number; y: number }) {
+function swap(theme: Theme) {
   const root = document.documentElement;
-  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  if (reduced || !document.startViewTransition) {
-    root.classList.add("theme-switching");
-    commit(theme);
-    window.setTimeout(() => root.classList.remove("theme-switching"), 340);
-    return;
-  }
-
-  // Reach the furthest corner so the circle always clears the viewport.
-  const radius = Math.hypot(
-    Math.max(origin.x, window.innerWidth - origin.x),
-    Math.max(origin.y, window.innerHeight - origin.y),
-  );
-
-  // Handed to the keyframes, which is what lets the circle animate from the
-  // transition's first frame rather than being attached a few frames late.
-  root.style.setProperty("--vt-x", `${origin.x}px`);
-  root.style.setProperty("--vt-y", `${origin.y}px`);
-  root.style.setProperty("--vt-r", `${radius}px`);
-
-  const phase = theme === "light" ? "theme-collapsing" : "theme-expanding";
-  root.classList.add(phase);
-
-  const transition = document.startViewTransition(() => commit(theme));
-
-  transition.finished.finally(() => {
-    root.classList.remove(phase);
-    root.style.removeProperty("--vt-x");
-    root.style.removeProperty("--vt-y");
-    root.style.removeProperty("--vt-r");
-  });
+  root.classList.add("theme-switching");
+  commit(theme);
+  window.setTimeout(() => root.classList.remove("theme-switching"), 340);
 }
 
 /*
@@ -93,13 +63,9 @@ const readTheme = (): Theme =>
 export function ThemeToggle() {
   const theme = useSyncExternalStore(subscribe, readTheme, () => "light" as Theme);
 
-  const toggle = (event: MouseEvent<HTMLButtonElement>) => {
-    const rect = event.currentTarget.getBoundingClientRect();
+  const toggle = () => {
     playTone("nav");
-    swap(theme === "dark" ? "light" : "dark", {
-      x: rect.left + rect.width / 2,
-      y: rect.top + rect.height / 2,
-    });
+    swap(theme === "dark" ? "light" : "dark");
   };
 
   const dark = theme === "dark";
