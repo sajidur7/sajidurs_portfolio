@@ -113,7 +113,9 @@ export function Hero() {
       </Reveal>
 
       <Reveal
-        className="mt-[30.5px] flex flex-wrap items-center justify-between gap-x-[10px] gap-y-[18px]"
+        /* 26.5 rather than 30.5: the pills grew 36→40px, and frame 14:69 takes
+           that out of the space above them instead of pushing the card down. */
+        className="mt-[26.5px] flex flex-wrap items-center justify-between gap-x-[10px] gap-y-[18px]"
         delay={300}
       >
         <span className="flex items-center gap-[10px]">

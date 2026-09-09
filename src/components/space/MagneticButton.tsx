@@ -87,7 +87,7 @@ export function MagneticButton({
     onPointerLeave: release,
     onBlur: release,
     style: { transform: "translate(var(--tx, 0px), var(--ty, 0px))" },
-    className: `group relative isolate flex h-[36px] shrink-0 items-center justify-center gap-[8px] overflow-hidden rounded-full px-[15px] py-[10px] transition-[transform,scale] duration-[450ms] ease-[var(--ease-smooth)] active:scale-[0.985] ${styles.shell}`,
+    className: `group relative isolate flex h-[40px] shrink-0 items-center justify-center gap-[8px] overflow-hidden rounded-full px-[15px] py-[10px] transition-[transform,scale] duration-[450ms] ease-[var(--ease-smooth)] active:scale-[0.985] ${styles.shell}`,
   };
 
   const inner = (
