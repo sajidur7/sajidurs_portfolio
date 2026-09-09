@@ -358,9 +358,17 @@ export function Showcase() {
               src={SLIDES[expanded].src}
               alt={SLIDES[expanded].label}
               draggable={false}
-              /* Capped below the viewport so the work sits in some breathing
-                 room rather than filling the screen edge to edge. */
-              className="block max-h-[78vh] max-w-[92vw] select-none rounded-[20px] object-contain shadow-[0_40px_90px_-20px_rgba(0,0,0,0.45)] sm:max-w-[80vw]"
+              /*
+                Capped below the viewport so the work sits in some breathing
+                room rather than filling the screen edge to edge.
+
+                `max-w-full` rather than a viewport figure, so the cap is the
+                backdrop's own padded box: the margin is then exactly the 20px
+                inset, and it stays the same 20px whatever the screen. A vw cap
+                overflowed that padding and left a different gap on every
+                phone.
+              */
+              className="block max-h-[78vh] max-w-full select-none rounded-[20px] object-contain shadow-[0_40px_90px_-20px_rgba(0,0,0,0.45)] sm:max-w-[80vw]"
             />
 
             {/*
