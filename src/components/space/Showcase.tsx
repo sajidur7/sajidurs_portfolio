@@ -1,7 +1,7 @@
 "use client";
 
 /* eslint-disable @next/next/no-img-element */
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { playTone } from "@/lib/sound";
 import { Reveal } from "./Reveal";
 
@@ -35,17 +35,7 @@ const SWIPE_THRESHOLD = 50;
   quicker than opening, which was enough to stop the two reading as the same
   gesture.
 */
-/*
-  recent.design's own figures, read off their page rather than guessed: opening
-  an item there is a 500ms opacity fade on cubic-bezier(0.2, 0, 0, 1), and the
-  media inside carries no transform at all. Their container fades; the picture
-  is simply there.
-
-  That is the whole animation here now. The backdrop's own fade already covers
-  everything inside it — the work and its caption — so one property on one
-  element does the work in both directions, and nothing large has to move.
-*/
-const FADE_MS = 500;
+const FLIP_MS = 560;
 
 /* The caption bar's two repeated pieces. Both inherit the bar's colour, so the
    theme swap is one property on the container rather than eleven. */
@@ -71,12 +61,22 @@ export function Showcase() {
 
   const dragStart = useRef<number | null>(null);
   const dragged = useRef(false);
+  const slideRefs = useRef<Array<HTMLImageElement | null>>([]);
+  const fromRect = useRef<DOMRect | null>(null);
+  const bigRef = useRef<HTMLDivElement>(null);
+  /* Only an open travels from the thumbnail. Stepping between works while
+     expanded changes the same element's contents, and replaying the FLIP there
+     would fly the new image in from a card that is nowhere near the screen. */
+  const flipping = useRef(false);
 
   const go = useCallback((next: number) => {
     setIndex((next + SLIDES.length) % SLIDES.length);
   }, []);
 
   const open = (position: number) => {
+    const source = slideRefs.current[position];
+    fromRect.current = source ? source.getBoundingClientRect() : null;
+    flipping.current = true;
     setClosing(false);
     setExpanded(position);
   };
@@ -97,17 +97,133 @@ export function Showcase() {
   );
 
   const close = useCallback(() => {
+    const el = bigRef.current;
+
     /*
-      Nothing to unwind. The backdrop carries the fade, so closing is the same
-      property running back the other way, and this only has to wait for it
-      before unmounting.
+      Measure the thumbnail again instead of reusing the rect captured on the
+      way in. The page can scroll while a work is open, and a stale rect sends
+      the image home to where the card used to be.
     */
+    const live = expanded === null ? null : slideRefs.current[expanded];
+    const from = live?.getBoundingClientRect() ?? fromRect.current;
+
+    /*
+      The same journey as the open, in reverse, on the same duration and the
+      same curve. A mirrored ease-in is the textbook answer here and it was
+      wrong for this: it creeps off the mark before it accelerates, which
+      reads as a slow close even at an identical duration. Repeating the
+      ease-out is what actually makes the two feel like one gesture.
+    */
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    /* The reverse of whichever way it came in. */
+    if (el && !still && !window.matchMedia("(min-width: 640px)").matches) {
+      el.style.willChange = "transform, opacity";
+      el.style.transition = `transform ${FLIP_MS}ms var(--ease-flip), opacity ${FLIP_MS}ms var(--ease-flip)`;
+      el.style.opacity = "0";
+      el.style.transform = "scale(0.96)";
+    } else if (el && from && !still) {
+      const to = el.getBoundingClientRect();
+      el.style.willChange = "transform";
+      el.style.transition = `transform ${FLIP_MS}ms var(--ease-flip)`;
+      el.style.transform = `translate3d(${from.left + from.width / 2 - (to.left + to.width / 2)}px, ${
+        from.top + from.height / 2 - (to.top + to.height / 2)
+      }px, 0) scale(${from.width / to.width})`;
+    }
+
     setClosing(true);
-    window.setTimeout(() => {
-      setExpanded(null);
-      setClosing(false);
-    }, FADE_MS);
-  }, []);
+    window.setTimeout(
+      () => {
+        setExpanded(null);
+        setClosing(false);
+      },
+      /*
+        Opening skips the FLIP under reduced motion, so closing has to as well
+        — otherwise the two halves of the same gesture disagree, and a phone
+        with Reduce Motion on gets an instant open followed by a half-second
+        close. Reduce Motion is on by default for far more people on a phone
+        than on a desktop, which is where that mismatch shows up.
+      */
+      still ? 0 : FLIP_MS,
+    );
+  }, [expanded]);
+
+  /* FLIP: start the big image exactly where the card thumbnail is, then let it
+     travel to its natural place. Both share an aspect ratio, so one uniform
+     scale is enough and nothing squashes on the way. */
+  useLayoutEffect(() => {
+    if (expanded === null || closing) return;
+    if (!flipping.current) return;
+    flipping.current = false;
+    const el = bigRef.current;
+    const from = fromRect.current;
+    if (!el || !from) return;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    /*
+      On a phone the work does not travel — it settles in place.
+
+      recent.design opens an item without moving anything: the panel arrives
+      and the picture is simply there. That reads as effortless, and on a
+      phone it is also the honest choice, because there is nothing to travel
+      to. A phone card is already 335 of a 375 screen, so the shared-element
+      version resolved to a 3% scale and a slide — all of the cost of moving a
+      23MB texture for none of the effect. A settle in place costs the
+      compositor almost nothing and cannot judder.
+
+      The desktop keeps the flight: there the card is 670 against an 866
+      expansion, so the work has somewhere to come from and the movement earns
+      its keep.
+    */
+    if (!window.matchMedia("(min-width: 640px)").matches) {
+      el.style.willChange = "transform, opacity";
+      el.style.transition = "none";
+      el.style.opacity = "0";
+      el.style.transform = "scale(0.96)";
+
+      void el.getBoundingClientRect();
+
+      el.style.transition = `transform ${FLIP_MS}ms var(--ease-flip), opacity ${FLIP_MS}ms var(--ease-flip)`;
+      el.style.opacity = "1";
+      el.style.transform = "none";
+
+      const rest = window.setTimeout(() => {
+        el.style.willChange = "";
+      }, FLIP_MS + 60);
+
+      return () => window.clearTimeout(rest);
+    }
+
+    const to = el.getBoundingClientRect();
+
+    /*
+      The works are 2680x2160 — roughly 23MB of bitmap once decoded. Animating
+      a transform on something that size is only smooth if the browser
+      rasterises it once and then moves the texture, so the element is promoted
+      to its own layer for the duration: `will-change` up front, and a 3D
+      transform so the promotion actually happens.
+
+      The hint comes off once the motion is over. Left on, it pins that 23MB
+      layer in memory for as long as the work stays open.
+    */
+    el.style.willChange = "transform";
+    el.style.transition = "none";
+    el.style.transform = `translate3d(${from.left + from.width / 2 - (to.left + to.width / 2)}px, ${
+      from.top + from.height / 2 - (to.top + to.height / 2)
+    }px, 0) scale(${from.width / to.width})`;
+
+    void el.getBoundingClientRect();
+
+    el.style.transition = `transform ${FLIP_MS}ms var(--ease-flip)`;
+    el.style.transform = "translate3d(0, 0, 0)";
+
+    const settle = window.setTimeout(() => {
+      el.style.willChange = "";
+    }, FLIP_MS + 60);
+
+    return () => window.clearTimeout(settle);
+  }, [expanded, closing]);
 
   /*
     Advances on its own, and `index` is a dependency so any manual move — arrow,
@@ -275,6 +391,9 @@ export function Showcase() {
                 className="block size-full"
               >
                 <img
+                  ref={(node) => {
+                    slideRefs.current[position] = node;
+                  }}
                   src={slide.src}
                   alt={slide.label}
                   width={2680}
@@ -351,11 +470,16 @@ export function Showcase() {
             panel uses, and it does not follow the theme: an expanded work wants
             a dark ground to sit on either way.
           */
-          className="work-veil fixed inset-0 z-[200] flex cursor-zoom-out flex-col items-center justify-center bg-[var(--scrim-modal)] p-[20px] sm:p-[40px]"
+          className="fixed inset-0 z-[200] flex cursor-zoom-out flex-col items-center justify-center bg-[var(--scrim-modal)] p-[20px] opacity-0 transition-opacity duration-[560ms] ease-[var(--ease-flip)] data-[open=true]:opacity-100 sm:p-[40px]"
         >
-          {/* Shrink-wraps the image so the phone's tap zones can sit on its
-              edges rather than the screen's. */}
-          <div onClick={(event) => event.stopPropagation()} className="relative cursor-default">
+          {/* The wrapper shrink-wraps the image and carries the FLIP, so the
+              tap zones travel with it instead of sitting still while it
+              moves. */}
+          <div
+            ref={bigRef}
+            onClick={(event) => event.stopPropagation()}
+            className="relative cursor-default"
+          >
             <img
               src={SLIDES[expanded].src}
               alt={SLIDES[expanded].label}
@@ -418,8 +542,9 @@ export function Showcase() {
             before it, since a phone has no escape key, and tightens the right
             padding to 4 because the arrows end the row there.
 
-            A sibling of the image rather than a child, so it sits under the
-            work rather than on top of it.
+            A sibling of the image rather than a child: the wrapper carries the
+            FLIP, and anything inside it would be scaled along with the work on
+            the way in.
           */}
           <div
             onClick={(event) => event.stopPropagation()}

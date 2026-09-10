@@ -59,38 +59,6 @@
   }
 }
 
-/*
-  The expanded work, opening and closing.
-
-  Animations rather than transitions, which is the part of recent.design's
-  approach that is easy to miss: a transition needs a previous value to move
-  from, and an element that mounts already open has none — so the fade is
-  skipped entirely and the work simply appears. An animation plays on mount.
-
-  Swapping the name is what restarts it, so the same element runs the entry on
-  the way in and the exit on the way out. Their figures: 500ms on
-  cubic-bezier(0.2, 0, 0, 1).
-*/
-@keyframes work-in {
-  from {
-    opacity: 0;
-  }
-}
-
-@keyframes work-out {
-  to {
-    opacity: 0;
-  }
-}
-
-.work-veil {
-  animation: work-in var(--work-fade-ms) var(--work-fade-ease) both;
-}
-
-.work-veil[data-open="false"] {
-  animation-name: work-out;
-}
-
 /* The ring a status dot throws off; the dot itself never moves. */
 @keyframes blip {
   0% {
@@ -145,9 +113,6 @@ html[data-theme="dark"] {
   /* One number for the swap, shared by the CSS and the class the toggle adds
      for its duration — they have to agree or the fade is cut short. */
   --theme-swap-ms: 520ms;
-  /* recent.design's own open/close figures, read off their page. */
-  --work-fade-ms: 500ms;
-  --work-fade-ease: cubic-bezier(0.2, 0, 0, 1);
   /*
     The bottom fade's two tints, both defined once rather than as a pair that
     swaps. They are not swapped because a gradient cannot be transitioned —
