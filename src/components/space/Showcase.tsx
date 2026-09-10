@@ -2,6 +2,7 @@
 
 /* eslint-disable @next/next/no-img-element */
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { playTone } from "@/lib/sound";
 import { Reveal } from "./Reveal";
 
 /**
@@ -237,13 +238,24 @@ export function Showcase() {
         return;
       }
 
+      /*
+        The tones are asked for here because nothing else will supply them. A
+        click on any of these controls gets one from the page-wide pointerdown
+        listener; the keyboard has no pointer event behind it, so the same
+        actions were silent. Same tones as the controls they stand in for —
+        stepping is the lighter one, closing is a click, exactly as the arrows
+        and the backdrop sound under a mouse.
+      */
       if (event.key === "Escape" && expanded !== null) {
+        playTone("click");
         close();
         return;
       }
 
       if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
       event.preventDefault();
+
+      playTone("nav");
 
       const delta = event.key === "ArrowRight" ? 1 : -1;
       if (expanded !== null) {
