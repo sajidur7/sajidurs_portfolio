@@ -531,7 +531,7 @@ export function Showcase() {
               <span className={`${CAPTION_DOT} hidden sm:block`} />
             </span>
 
-            <p className={`${CAPTION_TEXT} hidden sm:block`}>esc to close</p>
+            <p className={`${CAPTION_TEXT} hidden sm:block`}>Esc to close</p>
           </div>
         </div>
       )}

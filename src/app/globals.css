@@ -31,6 +31,15 @@
     gathers pace before it settles.
   */
   --ease-flip: cubic-bezier(0.32, 0.72, 0, 1);
+  /*
+    And one for the theme swap. Both of the above are decelerating curves —
+    they leave at speed and spend their time arriving, which is right for
+    something travelling a distance. A whole-page colour change has no
+    distance: the eye reads the rate of change itself, and a curve that dumps
+    most of it in the first fifty milliseconds looks like a flash however long
+    the tail is. This one eases in as well as out, so the change starts gently.
+  */
+  --ease-theme: cubic-bezier(0.4, 0, 0.2, 1);
 
 
   --animate-blip: blip 2s cubic-bezier(0, 0, 0.2, 1) infinite;
@@ -102,6 +111,9 @@ html[data-theme="dark"] {
 }
 
 :root {
+  /* One number for the swap, shared by the CSS and the class the toggle adds
+     for its duration — they have to agree or the fade is cut short. */
+  --theme-swap-ms: 520ms;
   /* The bottom fade's tint, so it can invert with the theme. */
   --scrim: rgba(35, 35, 35, 0.1);
   /* What sits behind an expanded work or the booking panel. Deliberately not a
@@ -130,16 +142,44 @@ html[data-theme="dark"] {
  * Cross-fade the swap, but only while it is happening. A standing rule here
  * would outrank the Tailwind transition utilities on every hover state and
  * quietly replace them; the toggle adds this class for the duration instead.
+ *
+ * Longer than it was, and on a curve that eases in — see --ease-theme. Shadows
+ * are in the list too: several of them are tuned per theme, and left out they
+ * snapped while everything around them faded.
  */
 html.theme-switching *,
 html.theme-switching *::before,
 html.theme-switching *::after {
   transition:
-    background-color 320ms var(--ease-smooth),
-    border-color 320ms var(--ease-smooth),
-    color 320ms var(--ease-smooth),
-    fill 320ms var(--ease-smooth),
-    stroke 320ms var(--ease-smooth) !important;
+    background-color var(--theme-swap-ms) var(--ease-theme),
+    border-color var(--theme-swap-ms) var(--ease-theme),
+    color var(--theme-swap-ms) var(--ease-theme),
+    fill var(--theme-swap-ms) var(--ease-theme),
+    stroke var(--theme-swap-ms) var(--ease-theme),
+    box-shadow var(--theme-swap-ms) var(--ease-theme) !important;
+}
+
+/*
+ * The toggle's own icons are the exception.
+ *
+ * The rule above replaces the transition list on every element for the length
+ * of the swap — which would freeze the one thing the visitor is actually
+ * looking at while they press it. This wins on specificity and hands the sun
+ * and moon back the properties they animate. Outside a swap the same values
+ * apply through the standing rule below.
+ */
+html.theme-switching .theme-icon {
+  transition:
+    opacity var(--theme-swap-ms) var(--ease-theme),
+    rotate var(--theme-swap-ms) var(--ease-theme),
+    scale var(--theme-swap-ms) var(--ease-theme) !important;
+}
+
+.theme-icon {
+  transition:
+    opacity var(--theme-swap-ms) var(--ease-theme),
+    rotate var(--theme-swap-ms) var(--ease-theme),
+    scale var(--theme-swap-ms) var(--ease-theme);
 }
 
 body {
