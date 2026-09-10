@@ -27,15 +27,24 @@ const EMAIL = "mailto:incognitoshimul@gmail.com";
 export function Hero() {
   return (
     <>
-      <Reveal
-        className="mt-[60px] size-[70px] overflow-hidden rounded-full transition-transform duration-500 ease-[var(--ease-smooth)] hover:scale-[1.06]"
-        delay={60}
-      >
-        <img
-          src="/figma/p.png"
-          alt="Sajidur Rahman"
-          className="block size-full object-cover"
-        />
+      <Reveal className="mt-[60px] size-[70px]" delay={60}>
+        {/*
+          The hover lives on its own element, not on the Reveal.
+
+          `.reveal` declares a transition of its own — 0.7s, and a delay taken
+          from the stagger, 60ms here — and it outranks the utility alongside
+          it, so the scale was inheriting both: a wait before it started and
+          then most of a second to finish, in each direction. That is the lag.
+          Nested, it keeps the entrance on the wrapper and the hover here,
+          where nothing else is competing for the property.
+        */}
+        <span className="block size-full overflow-hidden rounded-full transition-transform duration-[320ms] ease-[var(--ease-flip)] hover:scale-[1.06]">
+          <img
+            src="/figma/p.png"
+            alt="Sajidur Rahman"
+            className="block size-full object-cover"
+          />
+        </span>
       </Reveal>
 
       <Reveal className="mt-[24px] flex flex-col items-start gap-[21px] text-ink" delay={120}>
