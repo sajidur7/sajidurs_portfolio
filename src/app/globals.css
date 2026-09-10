@@ -105,7 +105,6 @@ html[data-theme="dark"] {
   --color-rule: #3a3a3a;
   /* Accent is the brand and stays put across themes. */
 
-  --scrim: rgba(0, 0, 0, 0.55);
   --caption-ground: rgba(35, 35, 35, 0.6);
   --caption-ink: #f2f2f2;
 }
@@ -114,8 +113,14 @@ html[data-theme="dark"] {
   /* One number for the swap, shared by the CSS and the class the toggle adds
      for its duration — they have to agree or the fade is cut short. */
   --theme-swap-ms: 520ms;
-  /* The bottom fade's tint, so it can invert with the theme. */
-  --scrim: rgba(35, 35, 35, 0.1);
+  /*
+    The bottom fade's two tints, both defined once rather than as a pair that
+    swaps. They are not swapped because a gradient cannot be transitioned —
+    background-image changes in one frame — so the scrim paints both and fades
+    between them instead. See .bottom-scrim.
+  */
+  --scrim-light: rgba(35, 35, 35, 0.1);
+  --scrim-dark: rgba(0, 0, 0, 0.55);
   /* What sits behind an expanded work or the booking panel. Deliberately not a
      theme pair, unlike everything else here: a work and the booker both want a
      dark ground to sit on, whichever theme the page is in. */
@@ -156,7 +161,9 @@ html.theme-switching *::after {
     color var(--theme-swap-ms) var(--ease-theme),
     fill var(--theme-swap-ms) var(--ease-theme),
     stroke var(--theme-swap-ms) var(--ease-theme),
-    box-shadow var(--theme-swap-ms) var(--ease-theme) !important;
+    box-shadow var(--theme-swap-ms) var(--ease-theme),
+    opacity var(--theme-swap-ms) var(--ease-theme),
+    filter var(--theme-swap-ms) var(--ease-theme) !important;
 }
 
 /*
@@ -295,7 +302,6 @@ body {
   z-index: 40;
   height: 90px;
   pointer-events: none;
-  background: linear-gradient(to bottom, transparent, var(--scrim));
   -webkit-backdrop-filter: blur(3.5px);
   backdrop-filter: blur(3.5px);
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 70%);
@@ -312,6 +318,41 @@ body {
   .bottom-scrim {
     height: 110px;
   }
+}
+
+/*
+  Both tints at once, one on top of the other, and the theme decides which is
+  visible.
+
+  The tint is a gradient, and background-image does not transition — it changes
+  in a single frame. So on a theme swap the whole page would fade while the
+  band across the foot of the screen snapped, which is exactly where the eye
+  already is, because the nav sits in it. Two layers and an opacity fade give
+  the same picture and can be animated.
+*/
+.bottom-scrim::before,
+.bottom-scrim::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transition: opacity var(--theme-swap-ms) var(--ease-theme);
+}
+
+.bottom-scrim::before {
+  background: linear-gradient(to bottom, transparent, var(--scrim-light));
+}
+
+.bottom-scrim::after {
+  background: linear-gradient(to bottom, transparent, var(--scrim-dark));
+  opacity: 0;
+}
+
+html[data-theme="dark"] .bottom-scrim::before {
+  opacity: 0;
+}
+
+html[data-theme="dark"] .bottom-scrim::after {
+  opacity: 1;
 }
 
 /*
@@ -535,18 +576,30 @@ html[data-theme="dark"] a:hover .social-mark {
   filter: invert(1);
 }
 
-/* Five tech logos are near-black and vanish on dark; the design supplies white
-   versions, swapped in here. */
+/*
+  Five tech logos are near-black and vanish on dark; the design supplies white
+  versions, and both are drawn, stacked, with the theme choosing which shows.
+
+  Opacity rather than display, which has no in-between: those five used to cut
+  from one file to the other on a single frame while every colour around them
+  faded. Stacked like this they cross over instead. Both are already absolutely
+  positioned on the same geometry, so neither affects layout.
+*/
+.logo-light,
 .logo-dark {
-  display: none;
+  transition: opacity var(--theme-swap-ms) var(--ease-theme);
+}
+
+.logo-dark {
+  opacity: 0;
 }
 
 html[data-theme="dark"] .logo-light {
-  display: none;
+  opacity: 0;
 }
 
 html[data-theme="dark"] .logo-dark {
-  display: block;
+  opacity: 1;
 }
 
 /*
