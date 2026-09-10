@@ -202,6 +202,30 @@ export function Showcase() {
     return () => window.clearInterval(id);
   }, [paused, expanded, index]);
 
+  /*
+    Decode the slide in view ahead of time.
+
+    The expanded image decodes synchronously so a work never opens on a blank
+    frame — but a cold decode of one of these is 60ms on a desktop and several
+    times that on a phone, and it lands inline, on the very frame the expand
+    begins. Closing has no decode to do, which is why opening was the half that
+    stuttered and closing was fine.
+
+    Warming it here spends that time in the quiet after a slide settles, so by
+    the time the work is tapped the synchronous decode finds it already done
+    and costs nothing. Only the slide actually in view: these are 22MB of
+    bitmap each once decoded, and holding several would trade a stutter for
+    memory pressure on the phones this is meant to help.
+  */
+  useEffect(() => {
+    const warm = new Image();
+    warm.src = SLIDES[index].src;
+    void warm.decode().catch(() => {
+      /* a decode that loses its race, or an image that never loads — the
+         expand still works, it just pays for the decode itself. */
+    });
+  }, [index]);
+
   useEffect(() => {
     const onVisibility = () => setPaused(document.hidden);
     document.addEventListener("visibilitychange", onVisibility);
