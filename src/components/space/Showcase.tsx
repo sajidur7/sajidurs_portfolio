@@ -116,7 +116,13 @@ export function Showcase() {
     */
     const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    if (el && from && !still) {
+    /* The reverse of whichever way it came in. */
+    if (el && !still && !window.matchMedia("(min-width: 640px)").matches) {
+      el.style.willChange = "transform, opacity";
+      el.style.transition = `transform ${FLIP_MS}ms var(--ease-flip), opacity ${FLIP_MS}ms var(--ease-flip)`;
+      el.style.opacity = "0";
+      el.style.transform = "scale(0.96)";
+    } else if (el && from && !still) {
       const to = el.getBoundingClientRect();
       el.style.willChange = "transform";
       el.style.transition = `transform ${FLIP_MS}ms var(--ease-flip)`;
@@ -154,6 +160,40 @@ export function Showcase() {
     if (!el || !from) return;
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    /*
+      On a phone the work does not travel — it settles in place.
+
+      recent.design opens an item without moving anything: the panel arrives
+      and the picture is simply there. That reads as effortless, and on a
+      phone it is also the honest choice, because there is nothing to travel
+      to. A phone card is already 335 of a 375 screen, so the shared-element
+      version resolved to a 3% scale and a slide — all of the cost of moving a
+      23MB texture for none of the effect. A settle in place costs the
+      compositor almost nothing and cannot judder.
+
+      The desktop keeps the flight: there the card is 670 against an 866
+      expansion, so the work has somewhere to come from and the movement earns
+      its keep.
+    */
+    if (!window.matchMedia("(min-width: 640px)").matches) {
+      el.style.willChange = "transform, opacity";
+      el.style.transition = "none";
+      el.style.opacity = "0";
+      el.style.transform = "scale(0.96)";
+
+      void el.getBoundingClientRect();
+
+      el.style.transition = `transform ${FLIP_MS}ms var(--ease-flip), opacity ${FLIP_MS}ms var(--ease-flip)`;
+      el.style.opacity = "1";
+      el.style.transform = "none";
+
+      const rest = window.setTimeout(() => {
+        el.style.willChange = "";
+      }, FLIP_MS + 60);
+
+      return () => window.clearTimeout(rest);
+    }
 
     const to = el.getBoundingClientRect();
 

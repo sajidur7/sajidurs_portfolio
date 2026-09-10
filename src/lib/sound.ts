@@ -59,9 +59,16 @@ export function setMuted(next: boolean) {
   }
 }
 
+/*
+  `peak` is the gain the tick reaches before it decays. These were quiet enough
+  to miss on a phone speaker or over any background noise, so both are up by
+  roughly two and a half times. The click stays the louder of the two: stepping
+  through work happens far more often than committing to something, and should
+  stay the lighter sound of the pair.
+*/
 const TONES: Record<Tone, { from: number; to: number; peak: number }> = {
-  click: { from: 880, to: 440, peak: 0.05 },
-  nav: { from: 1320, to: 760, peak: 0.04 },
+  click: { from: 880, to: 440, peak: 0.13 },
+  nav: { from: 1320, to: 760, peak: 0.1 },
 };
 
 function emit(ctx: AudioContext, tone: Tone) {
