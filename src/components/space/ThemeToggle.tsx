@@ -1,6 +1,6 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import { playTone } from "@/lib/sound";
 
 /**
@@ -76,6 +76,51 @@ const readTheme = (): Theme =>
 
 export function ThemeToggle() {
   const theme = useSyncExternalStore(subscribe, readTheme, () => "light" as Theme);
+
+  /*
+    D and L, from anywhere on the page.
+
+    They stay out of the way of anything the visitor is actually doing. A
+    modifier means the browser's own shortcut — cmd+D bookmarks, ctrl+L is the
+    address bar — and a field means they are typing a d or an l.
+
+    The last guard is the point of the request: while a work is expanded or the
+    booker is up, the page belongs to that, and repainting the room around it
+    is not what the keypress was for. Both overlays are modal dialogs, so
+    asking the document whether one is open is enough — no state to thread
+    between components, and anything modal added later is covered by the same
+    check.
+
+    Bare letters, so no modifier check is needed on the way in; the theme is
+    read from the DOM rather than from the render, which keeps a stale value
+    from ever reaching a comparison.
+  */
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      const key = event.key.toLowerCase();
+      if (key !== "d" && key !== "l") return;
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+
+      const target = event.target;
+      if (
+        target instanceof Element &&
+        target.closest("input, textarea, select, [contenteditable='true']")
+      ) {
+        return;
+      }
+
+      if (document.querySelector('[role="dialog"][aria-modal="true"]')) return;
+
+      const next: Theme = key === "d" ? "dark" : "light";
+      if (readTheme() === next) return;
+
+      playTone("nav");
+      swap(next);
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
 
   const toggle = () => {
     playTone("nav");
