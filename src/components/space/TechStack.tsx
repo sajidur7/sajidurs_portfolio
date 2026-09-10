@@ -1,4 +1,7 @@
+"use client";
+
 /* eslint-disable @next/next/no-img-element */
+import { cursorToast } from "@/lib/sound";
 import { Reveal } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
 
@@ -56,8 +59,27 @@ export function TechStack() {
             {/*
               The crop lives on its own element so it cannot clip the tooltip,
               and so the hover lift moves the logo without moving the tooltip.
+
+              A button, because on a phone this is the only way to reach the
+              line: the tooltip is hover-only, and there is no hover there.
+              Tapping sends it to the cursor toast instead, which parks above
+              the nav and fades the same way the nav's own replies do — so the
+              phone gets the same line as the desktop, in the one place a
+              message already appears.
             */}
-            <span className="relative block size-full overflow-hidden transition-transform duration-300 ease-[var(--ease-smooth)] group-hover:-translate-y-[4px] group-hover:scale-110">
+            <button
+              type="button"
+              aria-label={`${tool.label} — ${tool.tip}`}
+              onClick={() => {
+                /* Only where the tooltip cannot reach. Above the breakpoint
+                   hovering already shows it, and a toast as well would say the
+                   same thing twice. */
+                if (!window.matchMedia("(min-width: 640px)").matches) {
+                  cursorToast(tool.tip);
+                }
+              }}
+              className="relative block size-full overflow-hidden transition-transform duration-300 ease-[var(--ease-smooth)] group-hover:-translate-y-[4px] group-hover:scale-110 active:scale-95"
+            >
               {(() => {
                 const geometry = tool.img
                   ? { width: tool.img.w, height: tool.img.h, left: tool.img.x, top: tool.img.y }
@@ -85,7 +107,7 @@ export function TechStack() {
                   </>
                 );
               })()}
-            </span>
+            </button>
 
             {/*
               Node 7:334 — centred under the icon, 10px clear of it.
