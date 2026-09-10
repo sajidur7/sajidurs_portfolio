@@ -16,9 +16,22 @@ const STORAGE_KEY = "space:sound-muted";
  */
 export const CURSOR_TOAST = "space:cursor-toast";
 
-export function cursorToast(message: string) {
+/*
+  Two looks, and the difference is meaning rather than decoration. Accent is
+  for the replies the page itself owes you — a page that does not exist yet, an
+  address on your clipboard. Ink is for a label standing in for something the
+  desktop shows on hover, so it matches that tooltip rather than raising its
+  voice to the level of an answer.
+*/
+export type ToastTone = "accent" | "ink";
+
+export type ToastDetail = { message: string; tone: ToastTone };
+
+export function cursorToast(message: string, tone: ToastTone = "accent") {
   if (typeof window === "undefined") return;
-  window.dispatchEvent(new CustomEvent(CURSOR_TOAST, { detail: message }));
+  window.dispatchEvent(
+    new CustomEvent<ToastDetail>(CURSOR_TOAST, { detail: { message, tone } }),
+  );
 }
 
 type Tone = "click" | "nav";

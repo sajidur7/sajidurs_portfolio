@@ -75,7 +75,7 @@ export function TechStack() {
                    hovering already shows it, and a toast as well would say the
                    same thing twice. */
                 if (!window.matchMedia("(min-width: 640px)").matches) {
-                  cursorToast(tool.tip);
+                  cursorToast(tool.tip, "ink");
                 }
               }}
               className="relative block size-full overflow-hidden transition-transform duration-300 ease-[var(--ease-smooth)] group-hover:-translate-y-[4px] group-hover:scale-110 active:scale-95"

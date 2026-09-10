@@ -336,6 +336,19 @@ body {
 }
 
 /*
+  The ink tone. Accent is the page answering for itself — a page that does not
+  exist yet, an address copied. This one is standing in for the tech stack's
+  hover tooltip on a phone, so it takes that tooltip's colours and inverts with
+  the theme exactly as it does, rather than borrowing an accent that means
+  something else.
+*/
+.cursor-toast-pill[data-tone="ink"] {
+  background: var(--color-ink);
+  color: var(--color-canvas);
+  box-shadow: 0 6px 16px -6px rgba(0, 0, 0, 0.45);
+}
+
+/*
   On a phone there is no cursor to ride, and a pill dropped at the fingertip
   runs off whichever edge was tapped — which is exactly what happened to the
   nav's replies, since those live in the bottom corners.

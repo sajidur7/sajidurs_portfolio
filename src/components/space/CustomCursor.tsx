@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { CURSOR_TOAST, cursorToast, playTone } from "@/lib/sound";
+import { CURSOR_TOAST, type ToastDetail, type ToastTone, cursorToast, playTone } from "@/lib/sound";
 
 /**
  * Replaces the system pointer with the arrow from the design, fires a spark
@@ -58,6 +58,7 @@ export function CustomCursor() {
     fades out after them. Keeping the text lets the whole thing leave together.
   */
   const [toast, setToast] = useState("");
+  const [toastTone, setToastTone] = useState<ToastTone>("accent");
   const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
@@ -188,7 +189,9 @@ export function CustomCursor() {
     };
 
     const onToast = (event: Event) => {
-      setToast((event as CustomEvent<string>).detail);
+      const { message, tone } = (event as CustomEvent<ToastDetail>).detail;
+      setToast(message);
+      setToastTone(tone);
       setShowToast(true);
       window.clearTimeout(toastTimer);
       toastTimer = window.setTimeout(() => setShowToast(false), TOAST_MS);
@@ -245,7 +248,9 @@ export function CustomCursor() {
           phone. Outside the arrow because it has to be able to pin itself to
           the viewport, which a transformed ancestor would prevent. */}
       <span ref={toastRef} className="cursor-toast" data-visible={showToast} aria-hidden>
-        <span className="cursor-toast-pill">{toast}</span>
+        <span className="cursor-toast-pill" data-tone={toastTone}>
+          {toast}
+        </span>
       </span>
     </>
   );
