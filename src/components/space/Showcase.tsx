@@ -116,13 +116,7 @@ export function Showcase() {
     */
     const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    /* The reverse of whichever way it came in. */
-    if (el && !still && !window.matchMedia("(min-width: 640px)").matches) {
-      el.style.willChange = "transform, opacity";
-      el.style.transition = `transform ${FLIP_MS}ms var(--ease-flip), opacity ${FLIP_MS}ms var(--ease-flip)`;
-      el.style.opacity = "0";
-      el.style.transform = "scale(0.96)";
-    } else if (el && from && !still) {
+    if (el && from && !still) {
       const to = el.getBoundingClientRect();
       el.style.willChange = "transform";
       el.style.transition = `transform ${FLIP_MS}ms var(--ease-flip)`;
@@ -148,9 +142,16 @@ export function Showcase() {
     );
   }, [expanded]);
 
-  /* FLIP: start the big image exactly where the card thumbnail is, then let it
+  /*
+     FLIP: start the big image exactly where the card thumbnail is, then let it
      travel to its natural place. Both share an aspect ratio, so one uniform
-     scale is enough and nothing squashes on the way. */
+     scale is enough and nothing squashes on the way.
+
+     One path for every width. A phone card is already 335 of a 375 screen, so
+     the same maths resolves to a much smaller scale there than the desktop's
+     0.77 — but it is the same motion, from the same card, on the same curve
+     and duration, which is what makes the two feel like one gesture.
+  */
   useLayoutEffect(() => {
     if (expanded === null || closing) return;
     if (!flipping.current) return;
@@ -160,40 +161,6 @@ export function Showcase() {
     if (!el || !from) return;
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    /*
-      On a phone the work does not travel — it settles in place.
-
-      recent.design opens an item without moving anything: the panel arrives
-      and the picture is simply there. That reads as effortless, and on a
-      phone it is also the honest choice, because there is nothing to travel
-      to. A phone card is already 335 of a 375 screen, so the shared-element
-      version resolved to a 3% scale and a slide — all of the cost of moving a
-      23MB texture for none of the effect. A settle in place costs the
-      compositor almost nothing and cannot judder.
-
-      The desktop keeps the flight: there the card is 670 against an 866
-      expansion, so the work has somewhere to come from and the movement earns
-      its keep.
-    */
-    if (!window.matchMedia("(min-width: 640px)").matches) {
-      el.style.willChange = "transform, opacity";
-      el.style.transition = "none";
-      el.style.opacity = "0";
-      el.style.transform = "scale(0.96)";
-
-      void el.getBoundingClientRect();
-
-      el.style.transition = `transform ${FLIP_MS}ms var(--ease-flip), opacity ${FLIP_MS}ms var(--ease-flip)`;
-      el.style.opacity = "1";
-      el.style.transform = "none";
-
-      const rest = window.setTimeout(() => {
-        el.style.willChange = "";
-      }, FLIP_MS + 60);
-
-      return () => window.clearTimeout(rest);
-    }
 
     const to = el.getBoundingClientRect();
 
