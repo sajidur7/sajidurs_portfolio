@@ -42,7 +42,9 @@ export function Hero() {
           <img
             src="/figma/p.png"
             alt="Sajidur Rahman"
-            className="block size-full object-cover"
+            className="block size-full rounded-full object-cover"
+            width={70}
+            height={70}
           />
         </span>
       </Reveal>
