@@ -183,7 +183,10 @@ export function CustomCursor() {
 
       if (!(await copyEmail())) return;
 
-      playTone("nav");
+      /* The same tick a click makes. Reaching the clipboard from the keyboard
+         is the same kind of act as reaching it with the mouse, so it should
+         not announce itself differently. */
+      playTone("click");
       spark(targetX, targetY);
       cursorToast("Email copied to clipboard");
     };

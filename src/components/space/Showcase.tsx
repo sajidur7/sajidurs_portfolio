@@ -44,9 +44,9 @@ const CHEVRON_LEFT =
 const CHEVRON_RIGHT =
   "M0.700085 0.700046C0.700085 0.700046 5.70004 4.38249 5.70005 5.70009C5.70006 7.01768 0.700046 10.7 0.700046 10.7";
 
-/* What the bar calls the set. One word for all five, as the frame shows it —
-   swap it for a per-slide field the day the works get their own names. */
-const CAPTION_NAME = "Proto";
+/* What the bar calls the set. One word for all of them — swap it for a
+   per-slide field the day the works get their own names. */
+const CAPTION_NAME = "Work";
 const CAPTION_TEXT = "text-trim whitespace-nowrap font-body text-[13px] leading-[22px]";
 const CAPTION_DOT = "block size-[2px] shrink-0 rounded-full bg-current";
 /** Long enough to actually look at a piece, short enough that it keeps moving. */

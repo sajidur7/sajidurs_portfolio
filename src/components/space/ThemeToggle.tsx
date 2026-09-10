@@ -114,7 +114,8 @@ export function ThemeToggle() {
       const next: Theme = key === "d" ? "dark" : "light";
       if (readTheme() === next) return;
 
-      playTone("nav");
+      /* Matching the click, because that is what this stands in for. */
+      playTone("click");
       swap(next);
     };
 
@@ -122,8 +123,13 @@ export function ThemeToggle() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
 
+  /*
+    No tone here. Every pointerdown on the page already gets one, so sounding
+    another from the click handler stacked two on top of each other — two
+    oscillators for one press. The keyboard path above has no pointer event
+    behind it, which is why that one still asks for its own.
+  */
   const toggle = () => {
-    playTone("nav");
     swap(theme === "dark" ? "light" : "dark");
   };
 

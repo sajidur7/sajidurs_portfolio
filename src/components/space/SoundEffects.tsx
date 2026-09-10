@@ -28,12 +28,21 @@ export function SoundEffects() {
         "a, button, [role='button']",
       );
 
-      const isCarousel = Boolean(
-        control?.closest("[aria-roledescription='carousel']") ||
-          control?.getAttribute("aria-label")?.match(/slide/i),
+      /*
+        The lighter tone is for stepping, not for everything that happens to
+        live in the carousel. It used to go by whether the control sat inside
+        one, which caught opening a work as well — but opening a work is
+        committing to it, the same act as any other click on the page, and it
+        should sound like one. Closing already did, since the backdrop is not a
+        control at all, so the two halves disagreed.
+
+        Every stepping control says so in its label: previous, next, go to.
+      */
+      const isStep = Boolean(
+        control?.getAttribute("aria-label")?.match(/^(previous|next|go to)\b/i),
       );
 
-      playTone(isCarousel ? "nav" : "click");
+      playTone(isStep ? "nav" : "click");
     };
 
     document.addEventListener("pointerdown", onPointerDown);
